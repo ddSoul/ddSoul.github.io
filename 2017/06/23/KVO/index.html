@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+
+
+  <html class="light page-post">
+
+
+<head>
+  <meta charset="utf-8">
+  
+  <title>KVO | ddSoul</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="ddSoul,Object-C,JavaScript,Swift," />
+  
+
+  <meta name="description" content="感觉原地停留了很久，再不弄点东西都忘了自己是做iOS开发的。早之前就了解过KVO的实现，也知道大概的实现，但是知道归知道，没自己实践过就是在扯淡，实践实践可以加深自己的印象。  #####分析大家也都大概的了解过KVO的实现，主要分三步：  addObserver:forKeyPath方法创建了一个新类 isa指针指向新类 在新类里重写set方法 改变值后sendMsg到observeValue">
+<meta property="og:type" content="article">
+<meta property="og:title" content="KVO">
+<meta property="og:url" content="http://yoursite.com/2017/06/23/KVO/index.html">
+<meta property="og:site_name" content="ddSoul">
+<meta property="og:description" content="感觉原地停留了很久，再不弄点东西都忘了自己是做iOS开发的。早之前就了解过KVO的实现，也知道大概的实现，但是知道归知道，没自己实践过就是在扯淡，实践实践可以加深自己的印象。  #####分析大家也都大概的了解过KVO的实现，主要分三步：  addObserver:forKeyPath方法创建了一个新类 isa指针指向新类 在新类里重写set方法 改变值后sendMsg到observeValue">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1290657-200049fc3edd78b0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1290657-8196f5a4d72949c6.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:updated_time" content="2017-08-23T13:23:12.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="KVO">
+<meta name="twitter:description" content="感觉原地停留了很久，再不弄点东西都忘了自己是做iOS开发的。早之前就了解过KVO的实现，也知道大概的实现，但是知道归知道，没自己实践过就是在扯淡，实践实践可以加深自己的印象。  #####分析大家也都大概的了解过KVO的实现，主要分三步：  addObserver:forKeyPath方法创建了一个新类 isa指针指向新类 在新类里重写set方法 改变值后sendMsg到observeValue">
+<meta name="twitter:image" content="http://upload-images.jianshu.io/upload_images/1290657-200049fc3edd78b0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+
+  
+
+  
+    <link rel="icon" href="/favicon.ico">
+  
+
+  <link href="/css/styles.css?v=c114cbe6" rel="stylesheet">
+
+
+  
+    <link rel="stylesheet" href="/css/personal-style.css">
+  
+
+  
+
+  
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?57e94d016e201fba3603a8a2b0263af0";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+  
+  <script type="text/javascript">
+	(function(){
+	    var bp = document.createElement('script');
+	    var curProtocol = window.location.protocol.split(':')[0];
+	    if (curProtocol === 'https') {
+	        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+	    }
+	    else {
+	        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+	    }
+	    var s = document.getElementsByTagName("script")[0];
+	    s.parentNode.insertBefore(bp, s);
+	})();
+  </script>
+
+
+
+  
+    <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  
+
+  
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.3.0/css/font-awesome.min.css">
+  
+</head>
+
+<body>
+
+
+  
+    <span id="toolbox-mobile" class="toolbox-mobile">盒子</span>
+  
+
+  <div class="post-header CENTER">
+   
+  <div class="toolbox">
+    <a class="toolbox-entry" href="/">
+      <span class="toolbox-entry-text">盒子</span>
+      <i class="icon-angle-down"></i>
+      <i class="icon-home"></i>
+    </a>
+    <ul class="list-toolbox">
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archives/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            博客
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+</div>
+
+
+
+
+<div class="content content-post CENTER">
+   <article id="post-KVO" class="article article-type-post" itemprop="blogPost">
+  <header class="article-header">
+    <h1 class="post-title">KVO</h1>
+
+    <div class="article-meta">
+      <span>
+        <i class="icon-calendar"></i>
+        <span>2017.06.23</span>
+      </span>
+
+      
+        <span class="article-author">
+          <i class="icon-user"></i>
+          <span>Mr.deng</span>
+        </span>
+      
+
+      
+
+
+      
+        <span>
+          <i class="icon-comment"></i>
+          <a href="http://www.jianshu.com/u/2adde60e3bba/2017/06/23/KVO/#disqus_thread"></a>
+        </span>
+      
+
+      
+      <i class="fa fa-eye"></i> 
+        <span id="busuanzi_container_page_pv">
+           &nbsp热度 <span id="busuanzi_value_page_pv">
+           <i class="fa fa-spinner fa-spin"></i></span>℃
+        </span>
+      
+
+      
+      
+    </div>
+  </header>
+
+  <div class="article-content">
+    
+      <blockquote>
+<p>感觉原地停留了很久，再不弄点东西都忘了自己是做iOS开发的。早之前就了解过KVO的实现，也知道大概的实现，但是知道归知道，没自己实践过就是在扯淡，实践实践可以加深自己的印象。</p>
+</blockquote>
+<p>#####分析<br>大家也都大概的了解过KVO的实现，主要分三步：</p>
+<ul>
+<li>addObserver:forKeyPath方法创建了一个新类</li>
+<li>isa指针指向新类</li>
+<li>在新类里重写set方法</li>
+<li>改变值后sendMsg到observeValueForKeyPath</li>
+</ul>
+<p>通过强大的Xcode我们可以看到</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1290657-200049fc3edd78b0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="old.png"></p>
+<p>我们断点走到这之后，看到isa指向Person,然后我们在走一步<br><img src="http://upload-images.jianshu.io/upload_images/1290657-8196f5a4d72949c6.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="new.png"><br>看到此时isa指向了一个NSKVONotifying_Person的类，对的这个类就是系统为我们创建的。我们知道了大概的过程，就来模拟一下实现吧。</p>
+<p>#####手动模拟实现KVO<br>这个需要我们对OC的运行时(runtime)了解点。<br>话不多说贴代码(主要模块)<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line">- (void)XL_addObserver:(NSObject *)observer forKeyPath:(NSString *)keyPath options:(NSKeyValueObservingOptions)options context:(nullable void *)context&#123;</span><br><span class="line"></span><br><span class="line">//1.给新类起个名，可以随意</span><br><span class="line">NSString * oldClassName = NSStringFromClass([self class]);</span><br><span class="line">NSString * newName = [@&quot;XLKVO_&quot; stringByAppendingString:oldClassName];</span><br><span class="line">const char * newClassName = [newName UTF8String];</span><br><span class="line">//2.创建新类</span><br><span class="line">Class newClass = objc_allocateClassPair([self class], newClassName, 0);</span><br><span class="line">//3.添加方法</span><br><span class="line">/* </span><br><span class="line">&quot;v@:@&quot;这个需要解释一下,官方示例v@:无参数无返回值函数，v@:@无返回值有参数</span><br><span class="line">可以option class_addMethod方法看一看</span><br><span class="line">这个还有个注意点，添加方法之前应该先判断这个类有没有这个方法</span><br><span class="line">*/</span><br><span class="line">class_addMethod(newClass, @selector(setName:), (IMP)setName, &quot;v@:@&quot;);</span><br><span class="line">//4.注册新类</span><br><span class="line">objc_registerClassPair(newClass);</span><br><span class="line"></span><br><span class="line">//5.isa-&gt;newClass</span><br><span class="line">object_setClass(self, newClass);</span><br><span class="line"></span><br><span class="line">objc_setAssociatedObject(self, &quot;objc&quot;, observer, OBJC_ASSOCIATION_ASSIGN);</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">/*</span><br><span class="line">函数的前两个参数需要说明一下，</span><br><span class="line">函数默认是有两个参数，调用对象，一个方法编号</span><br><span class="line">Objective-C 2.0运行时系统 书中有讲到</span><br><span class="line">*/</span><br><span class="line">void setName(id self, SEL _cmd,NSString *newName)&#123;</span><br><span class="line"></span><br><span class="line">//保存当前类型</span><br><span class="line">id class = [self class];</span><br><span class="line">//改变当前对象指向父类</span><br><span class="line">object_setClass(self, class_getSuperclass([self class]));</span><br><span class="line">//调用父类的setName方法</span><br><span class="line">objc_msgSend(self, @selector(setName:),newName);</span><br><span class="line">//拿出观察者</span><br><span class="line">id observer = objc_getAssociatedObject(self, &quot;objc&quot;);</span><br><span class="line">//通知外界</span><br><span class="line">objc_msgSend(observer, @selector(observeValueForKeyPath:ofObject:change:context:),self,@&quot;name&quot;,@&#123;@&quot;new&quot;:newName&#125;,nil);</span><br><span class="line">//改回子类类型</span><br><span class="line">object_setClass(self, class);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>附：<a href="">Demo地址+运行时那本书</a></p>
+
+    
+  </div>
+</article>
+
+
+   
+  <div class="text-center donation">
+    <div class="inner-donation">
+      <span class="btn-donation">支持一下</span>
+      <div class="donation-body">
+        <div class="tip text-center">扫一扫，支持ddSoul</div>
+        <ul class="theme.donation.items.length">
+        
+          <li class="item">
+            <img src="/images/weixin.png" alt="">
+          </li>
+        
+        </ul>
+      </div>
+    </div>
+  </div>
+
+
+   
+  <div class="box-prev-next clearfix">
+    <a class="show pull-left" href="/2017/06/12/WWDC2017/">
+        <i class="icon icon-angle-left"></i>
+    </a>
+    <a class="show pull-right" href="/2017/07/25/小Case/">
+        <i class="icon icon-angle-right"></i>
+    </a>
+  </div>
+
+
+
+
+</div>
+
+
+  <a id="backTop" class="back-top">
+    <i class="icon-angle-up"></i>
+  </a>
+
+
+
+
+  <div class="modal" id="modal">
+  <span id="cover" class="cover hide"></span>
+  <div id="modal-dialog" class="modal-dialog hide-dialog">
+    <div class="modal-header">
+      <span id="close" class="btn-close">关闭</span>
+    </div>
+    <hr>
+    <div class="modal-body">
+      <ul class="list-toolbox">
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archives/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              博客
+            </a>
+          </li>
+        
+      </ul>
+
+    </div>
+  </div>
+</div>
+
+
+
+  
+      <div class="fexo-comments comments-post">
+    
+  <section class="disqus-comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+  </section>
+
+  <script>
+    var disqus_shortname = 'forsigner';
+    
+    var disqus_url = 'http://yoursite.com/2017/06/23/KVO/';
+    
+    (function(){
+      var dsq = document.createElement('script');
+      dsq.type = 'text/javascript';
+      dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+  </script>
+
+  <script id="dsq-count-scr" src="//forsigner.disqus.com/count.js" async></script>
+
+
+
+    
+
+
+
+
+    
+
+  </div>
+
+  
+
+  <script type="text/javascript">
+  function loadScript(url, callback) {
+    var script = document.createElement('script')
+    script.type = 'text/javascript';
+
+    if (script.readyState) { //IE
+      script.onreadystatechange = function() {
+        if (script.readyState == 'loaded' ||
+          script.readyState == 'complete') {
+          script.onreadystatechange = null;
+          callback();
+        }
+      };
+    } else { //Others
+      script.onload = function() {
+        callback();
+      };
+    }
+
+    script.src = url;
+    document.getElementsByTagName('head')[0].appendChild(script);
+  }
+
+  window.onload = function() {
+    loadScript('/js/bundle.js?235683', function() {
+      // load success
+    });
+  }
+</script>
+
+</body>
+</html>

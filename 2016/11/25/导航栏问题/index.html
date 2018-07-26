@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+
+
+  <html class="light page-post">
+
+
+<head>
+  <meta charset="utf-8">
+  
+  <title>导航栏问题 | ddSoul</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="ddSoul,Object-C,JavaScript,Swift," />
+  
+
+  <meta name="description" content="项目中有需求，每个页面的导航栏颜色不一样，刚开始不觉得有什么问题，但是操作后发现是个坑啊，用手势返回的时候，两个控制器的导航栏就会出现奇怪的问题。导航栏作为根控制器，正常的话只有一个，更改一个页面导航栏的颜色，另外一个就变化了。上网查看后，大概有几种解决办法。    方法一：使用iOS 7之后开放的，UIViewControllerAnimatedTransitioning协议，来实现自定义导航">
+<meta property="og:type" content="article">
+<meta property="og:title" content="导航栏问题">
+<meta property="og:url" content="http://yoursite.com/2016/11/25/导航栏问题/index.html">
+<meta property="og:site_name" content="ddSoul">
+<meta property="og:description" content="项目中有需求，每个页面的导航栏颜色不一样，刚开始不觉得有什么问题，但是操作后发现是个坑啊，用手势返回的时候，两个控制器的导航栏就会出现奇怪的问题。导航栏作为根控制器，正常的话只有一个，更改一个页面导航栏的颜色，另外一个就变化了。上网查看后，大概有几种解决办法。    方法一：使用iOS 7之后开放的，UIViewControllerAnimatedTransitioning协议，来实现自定义导航">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1290657-6e604aac0e32e421.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:updated_time" content="2017-03-01T12:16:39.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="导航栏问题">
+<meta name="twitter:description" content="项目中有需求，每个页面的导航栏颜色不一样，刚开始不觉得有什么问题，但是操作后发现是个坑啊，用手势返回的时候，两个控制器的导航栏就会出现奇怪的问题。导航栏作为根控制器，正常的话只有一个，更改一个页面导航栏的颜色，另外一个就变化了。上网查看后，大概有几种解决办法。    方法一：使用iOS 7之后开放的，UIViewControllerAnimatedTransitioning协议，来实现自定义导航">
+<meta name="twitter:image" content="http://upload-images.jianshu.io/upload_images/1290657-6e604aac0e32e421.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+
+  
+
+  
+    <link rel="icon" href="/favicon.ico">
+  
+
+  <link href="/css/styles.css?v=c114cbe6" rel="stylesheet">
+
+
+  
+    <link rel="stylesheet" href="/css/personal-style.css">
+  
+
+  
+
+  
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?57e94d016e201fba3603a8a2b0263af0";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+  
+  <script type="text/javascript">
+	(function(){
+	    var bp = document.createElement('script');
+	    var curProtocol = window.location.protocol.split(':')[0];
+	    if (curProtocol === 'https') {
+	        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+	    }
+	    else {
+	        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+	    }
+	    var s = document.getElementsByTagName("script")[0];
+	    s.parentNode.insertBefore(bp, s);
+	})();
+  </script>
+
+
+
+  
+    <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  
+
+  
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.3.0/css/font-awesome.min.css">
+  
+</head>
+
+<body>
+
+
+  
+    <span id="toolbox-mobile" class="toolbox-mobile">盒子</span>
+  
+
+  <div class="post-header CENTER">
+   
+  <div class="toolbox">
+    <a class="toolbox-entry" href="/">
+      <span class="toolbox-entry-text">盒子</span>
+      <i class="icon-angle-down"></i>
+      <i class="icon-home"></i>
+    </a>
+    <ul class="list-toolbox">
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archives/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            博客
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+</div>
+
+
+
+
+<div class="content content-post CENTER">
+   <article id="post-导航栏问题" class="article article-type-post" itemprop="blogPost">
+  <header class="article-header">
+    <h1 class="post-title">导航栏问题</h1>
+
+    <div class="article-meta">
+      <span>
+        <i class="icon-calendar"></i>
+        <span>2016.11.25</span>
+      </span>
+
+      
+        <span class="article-author">
+          <i class="icon-user"></i>
+          <span>Mr.deng</span>
+        </span>
+      
+
+      
+
+
+      
+        <span>
+          <i class="icon-comment"></i>
+          <a href="http://www.jianshu.com/u/2adde60e3bba/2016/11/25/导航栏问题/#disqus_thread"></a>
+        </span>
+      
+
+      
+      <i class="fa fa-eye"></i> 
+        <span id="busuanzi_container_page_pv">
+           &nbsp热度 <span id="busuanzi_value_page_pv">
+           <i class="fa fa-spinner fa-spin"></i></span>℃
+        </span>
+      
+
+      
+      
+    </div>
+  </header>
+
+  <div class="article-content">
+    
+      <blockquote>
+<p>项目中有需求，每个页面的导航栏颜色不一样，刚开始不觉得有什么问题，但是操作后发现是个坑啊，用手势返回的时候，两个控制器的导航栏就会出现奇怪的问题。导航栏作为根控制器，正常的话只有一个，更改一个页面导航栏的颜色，另外一个就变化了。上网查看后，大概有几种解决办法。</p>
+</blockquote>
+<p><img src="http://upload-images.jianshu.io/upload_images/1290657-6e604aac0e32e421.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Snip20161125_2.png"></p>
+<ul>
+<li>方法一：使用iOS 7之后开放的，UIViewControllerAnimatedTransitioning协议，来实现自定义导航栏转场动画及交互。</li>
+<li>方法二：包装，让每个控制器控制器拥有自己独立的导航栏。</li>
+<li>方法三：在每次Push前对当前页面进行截图并保存到数组，Pop时取数组最后一个元素显示，滑动结束后调用系统Pop方法并删除最后一张截图。</li>
+</ul>
+<p>方法一和三是参考一篇博客的（想了解的童鞋可以点击<a href="http://blog.csdn.net/u012960049/article/details/52787283" target="_blank" rel="noopener">这里</a>了解一下）,还没有具体的实践过，有时间还要试试。我下面重点说一下方法二，我使用的方法。</p>
+<p>正常导航栏是不可以将导航栏添加子控制器的。我们需要进行一下包装处理，把我们将要push的控制器包裹一层导航栏。如下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">//包装过程</span><br><span class="line">-(PackViewController *)packViewController:(UIViewController *)viewController</span><br><span class="line">&#123;</span><br><span class="line">    PackNavController *packNav = [[PackNavController alloc] init];</span><br><span class="line"></span><br><span class="line">    packNav.viewControllers = @[viewController];</span><br><span class="line">    </span><br><span class="line">    [self addChildViewController:packNav];</span><br><span class="line">    </span><br><span class="line">    self.packNav = packNav;</span><br><span class="line"></span><br><span class="line">    return self;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">// 注意, 这里压入的是一个包装过后的控制器</span><br><span class="line"> PackViewController *packViewController = [[PackViewController new] packViewController:viewController];</span><br><span class="line"> [self.navigationController pushViewController:packViewController animated:animated];</span><br></pre></td></tr></table></figure>
+<p>使用的时候<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">XLNavgationController *nav = [[XLNavgationController alloc]</span><br><span class="line">                              initWithRootViewController:[[ViewController alloc] init]];</span><br><span class="line">[self.window setRootViewController:nav];</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">NextViewController *push = [[NextViewController alloc] init];</span><br><span class="line">[self.navigationController pushViewController:push animated:YES];</span><br></pre></td></tr></table></figure>
+<p>大致这样的过程，里面具体的实现可以参考<a href="https://github.com/ddSoul/NavgationControllerTest.git" target="_blank" rel="noopener">Demo</a>，代码里有比较详细的处理。</p>
+<p>不足的地方，欢迎指出。😀</p>
+
+    
+  </div>
+</article>
+
+
+   
+  <div class="text-center donation">
+    <div class="inner-donation">
+      <span class="btn-donation">支持一下</span>
+      <div class="donation-body">
+        <div class="tip text-center">扫一扫，支持ddSoul</div>
+        <ul class="theme.donation.items.length">
+        
+          <li class="item">
+            <img src="/images/weixin.png" alt="">
+          </li>
+        
+        </ul>
+      </div>
+    </div>
+  </div>
+
+
+   
+  <div class="box-prev-next clearfix">
+    <a class="show pull-left" href="/2016/11/06/UUID-KeyChain/">
+        <i class="icon icon-angle-left"></i>
+    </a>
+    <a class="show pull-right" href="/2017/01/05/Category/">
+        <i class="icon icon-angle-right"></i>
+    </a>
+  </div>
+
+
+
+
+</div>
+
+
+  <a id="backTop" class="back-top">
+    <i class="icon-angle-up"></i>
+  </a>
+
+
+
+
+  <div class="modal" id="modal">
+  <span id="cover" class="cover hide"></span>
+  <div id="modal-dialog" class="modal-dialog hide-dialog">
+    <div class="modal-header">
+      <span id="close" class="btn-close">关闭</span>
+    </div>
+    <hr>
+    <div class="modal-body">
+      <ul class="list-toolbox">
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archives/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              博客
+            </a>
+          </li>
+        
+      </ul>
+
+    </div>
+  </div>
+</div>
+
+
+
+  
+      <div class="fexo-comments comments-post">
+    
+  <section class="disqus-comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+  </section>
+
+  <script>
+    var disqus_shortname = 'forsigner';
+    
+    var disqus_url = 'http://yoursite.com/2016/11/25/导航栏问题/';
+    
+    (function(){
+      var dsq = document.createElement('script');
+      dsq.type = 'text/javascript';
+      dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+  </script>
+
+  <script id="dsq-count-scr" src="//forsigner.disqus.com/count.js" async></script>
+
+
+
+    
+
+
+
+
+    
+
+  </div>
+
+  
+
+  <script type="text/javascript">
+  function loadScript(url, callback) {
+    var script = document.createElement('script')
+    script.type = 'text/javascript';
+
+    if (script.readyState) { //IE
+      script.onreadystatechange = function() {
+        if (script.readyState == 'loaded' ||
+          script.readyState == 'complete') {
+          script.onreadystatechange = null;
+          callback();
+        }
+      };
+    } else { //Others
+      script.onload = function() {
+        callback();
+      };
+    }
+
+    script.src = url;
+    document.getElementsByTagName('head')[0].appendChild(script);
+  }
+
+  window.onload = function() {
+    loadScript('/js/bundle.js?235683', function() {
+      // load success
+    });
+  }
+</script>
+
+</body>
+</html>

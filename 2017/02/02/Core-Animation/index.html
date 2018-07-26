@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+
+
+  <html class="light page-post">
+
+
+<head>
+  <meta charset="utf-8">
+  
+  <title>Core Animation | ddSoul</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="ddSoul,Object-C,JavaScript,Swift," />
+  
+
+  <meta name="description" content="Core Animation引用一下  Core Animation是直接作用在CALayer上的(并非UIView上)非常强大的跨Mac OS X和iOS平台的动画处理API，Core Animation的动画执行过程都是在后台操作的，不会阻塞主线程。  先来个图，大概了解一下Core Animation的结构,两张图，可以看得更清楚。   里面的几个类逐个来说一下首先如图所示，Core Ani">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Core Animation">
+<meta property="og:url" content="http://yoursite.com/2017/02/02/Core-Animation/index.html">
+<meta property="og:site_name" content="ddSoul">
+<meta property="og:description" content="Core Animation引用一下  Core Animation是直接作用在CALayer上的(并非UIView上)非常强大的跨Mac OS X和iOS平台的动画处理API，Core Animation的动画执行过程都是在后台操作的，不会阻塞主线程。  先来个图，大概了解一下Core Animation的结构,两张图，可以看得更清楚。   里面的几个类逐个来说一下首先如图所示，Core Ani">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/540664-45b078efac175dbb.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1290657-613f0f968d99c644.jpeg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:updated_time" content="2017-03-03T09:15:55.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Core Animation">
+<meta name="twitter:description" content="Core Animation引用一下  Core Animation是直接作用在CALayer上的(并非UIView上)非常强大的跨Mac OS X和iOS平台的动画处理API，Core Animation的动画执行过程都是在后台操作的，不会阻塞主线程。  先来个图，大概了解一下Core Animation的结构,两张图，可以看得更清楚。   里面的几个类逐个来说一下首先如图所示，Core Ani">
+<meta name="twitter:image" content="http://upload-images.jianshu.io/upload_images/540664-45b078efac175dbb.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+
+  
+
+  
+    <link rel="icon" href="/favicon.ico">
+  
+
+  <link href="/css/styles.css?v=c114cbe6" rel="stylesheet">
+
+
+  
+    <link rel="stylesheet" href="/css/personal-style.css">
+  
+
+  
+
+  
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?57e94d016e201fba3603a8a2b0263af0";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+  
+  <script type="text/javascript">
+	(function(){
+	    var bp = document.createElement('script');
+	    var curProtocol = window.location.protocol.split(':')[0];
+	    if (curProtocol === 'https') {
+	        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+	    }
+	    else {
+	        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+	    }
+	    var s = document.getElementsByTagName("script")[0];
+	    s.parentNode.insertBefore(bp, s);
+	})();
+  </script>
+
+
+
+  
+    <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  
+
+  
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.3.0/css/font-awesome.min.css">
+  
+</head>
+
+<body>
+
+
+  
+    <span id="toolbox-mobile" class="toolbox-mobile">盒子</span>
+  
+
+  <div class="post-header CENTER">
+   
+  <div class="toolbox">
+    <a class="toolbox-entry" href="/">
+      <span class="toolbox-entry-text">盒子</span>
+      <i class="icon-angle-down"></i>
+      <i class="icon-home"></i>
+    </a>
+    <ul class="list-toolbox">
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archives/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            博客
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+</div>
+
+
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#Core-Animation"><span class="toc-text">Core Animation</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#里面的几个类逐个来说一下"><span class="toc-text">里面的几个类逐个来说一下</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#首先如图所示，Core-Animation包括"><span class="toc-text">首先如图所示，Core Animation包括</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#CAAnimation的子类"><span class="toc-text">CAAnimation的子类</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#CAPropertyAnimation是一个抽象类，它有包含"><span class="toc-text">CAPropertyAnimation是一个抽象类，它有包含</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#CABasicAnimation下面又包含一些"><span class="toc-text">CABasicAnimation下面又包含一些</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#CABasicAnimation"><span class="toc-text">CABasicAnimation</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#CAKeyframeAnimation"><span class="toc-text">CAKeyframeAnimation</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#CATransition"><span class="toc-text">CATransition</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#CAAnimationGroup"><span class="toc-text">CAAnimationGroup</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#CASpringAnimation"><span class="toc-text">CASpringAnimation</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#说到这里应该说点给Core-Animation中的CALayer"><span class="toc-text">说到这里应该说点给Core Animation中的CALayer</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#CAShapeLayer"><span class="toc-text">CAShapeLayer</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#CAGradientLayer"><span class="toc-text">CAGradientLayer</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#CAReplicatorLayer"><span class="toc-text">CAReplicatorLayer</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#CAEmitterLayer"><span class="toc-text">CAEmitterLayer</span></a></li></ol>
+  </div>
+
+
+
+<div class="content content-post CENTER">
+   <article id="post-Core-Animation" class="article article-type-post" itemprop="blogPost">
+  <header class="article-header">
+    <h1 class="post-title">Core Animation</h1>
+
+    <div class="article-meta">
+      <span>
+        <i class="icon-calendar"></i>
+        <span>2017.02.02</span>
+      </span>
+
+      
+        <span class="article-author">
+          <i class="icon-user"></i>
+          <span>Mr.deng</span>
+        </span>
+      
+
+      
+
+
+      
+        <span>
+          <i class="icon-comment"></i>
+          <a href="http://www.jianshu.com/u/2adde60e3bba/2017/02/02/Core-Animation/#disqus_thread"></a>
+        </span>
+      
+
+      
+      <i class="fa fa-eye"></i> 
+        <span id="busuanzi_container_page_pv">
+           &nbsp热度 <span id="busuanzi_value_page_pv">
+           <i class="fa fa-spinner fa-spin"></i></span>℃
+        </span>
+      
+
+      
+      
+    </div>
+  </header>
+
+  <div class="article-content">
+    
+      <h4 id="Core-Animation"><a href="#Core-Animation" class="headerlink" title="Core Animation"></a>Core Animation</h4><p>引用一下</p>
+<blockquote>
+<p>Core Animation是直接作用在CALayer上的(并非UIView上)非常强大的跨Mac OS X和iOS平台的动画处理API，Core Animation的动画执行过程都是在后台操作的，不会阻塞主线程。</p>
+</blockquote>
+<p>先来个图，大概了解一下Core Animation的结构,两张图，可以看得更清楚。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/540664-45b078efac175dbb.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1290657-613f0f968d99c644.jpeg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
+<h5 id="里面的几个类逐个来说一下"><a href="#里面的几个类逐个来说一下" class="headerlink" title="里面的几个类逐个来说一下"></a>里面的几个类逐个来说一下</h5><h5 id="首先如图所示，Core-Animation包括"><a href="#首先如图所示，Core-Animation包括" class="headerlink" title="首先如图所示，Core Animation包括"></a>首先如图所示，Core Animation包括</h5><ul>
+<li>CAAnimation</li>
+</ul>
+<h5 id="CAAnimation的子类"><a href="#CAAnimation的子类" class="headerlink" title="CAAnimation的子类"></a>CAAnimation的子类</h5><ul>
+<li>CAPropertyAnimation</li>
+<li>CAAnimationGroup - 动画组</li>
+<li>CATransition - 专场动画</li>
+</ul>
+<h5 id="CAPropertyAnimation是一个抽象类，它有包含"><a href="#CAPropertyAnimation是一个抽象类，它有包含" class="headerlink" title="CAPropertyAnimation是一个抽象类，它有包含"></a>CAPropertyAnimation是一个抽象类，它有包含</h5><ul>
+<li>CABasicAnimation - 基础动画</li>
+<li>CAKeyframeAnimation - 关键帧动画</li>
+</ul>
+<h5 id="CABasicAnimation下面又包含一些"><a href="#CABasicAnimation下面又包含一些" class="headerlink" title="CABasicAnimation下面又包含一些"></a>CABasicAnimation下面又包含一些</h5><ul>
+<li>CASpringAnimation 等</li>
+</ul>
+<p>说一下这些动画的使用场景，至于里面的各种属性，比较多，还是自己多用多琢磨就好。</p>
+<h5 id="CABasicAnimation"><a href="#CABasicAnimation" class="headerlink" title="CABasicAnimation"></a>CABasicAnimation</h5><p>基础动画，主要用于一些基本的，旋转移动等等的变换操作。</p>
+<h5 id="CAKeyframeAnimation"><a href="#CAKeyframeAnimation" class="headerlink" title="CAKeyframeAnimation"></a>CAKeyframeAnimation</h5><p>同样是用于一些变化的动画，类似于CABasicAnimation,但是不同的是CABasicAnimation设置动画，一般只是两个值，起点和终点的值，而CAKeyframeAnimation可以有很多变化的值。</p>
+<h5 id="CATransition"><a href="#CATransition" class="headerlink" title="CATransition"></a>CATransition</h5><p>转场动画，主要用于一些页面跳转的笑哭操作加特技。</p>
+<h5 id="CAAnimationGroup"><a href="#CAAnimationGroup" class="headerlink" title="CAAnimationGroup"></a>CAAnimationGroup</h5><p>主要是组合用户，一遍旋转，一边变换。</p>
+<h4 id="CASpringAnimation"><a href="#CASpringAnimation" class="headerlink" title="CASpringAnimation"></a>CASpringAnimation</h4><p>弹簧动画</p>
+<h5 id="说到这里应该说点给Core-Animation中的CALayer"><a href="#说到这里应该说点给Core-Animation中的CALayer" class="headerlink" title="说到这里应该说点给Core Animation中的CALayer"></a>说到这里应该说点给Core Animation中的CALayer</h5><ul>
+<li>CAShapeLayer</li>
+<li>CAGradientLayer</li>
+<li>CAReplicatorLayer</li>
+<li>CAEmitterLayer</li>
+</ul>
+<h5 id="CAShapeLayer"><a href="#CAShapeLayer" class="headerlink" title="CAShapeLayer"></a>CAShapeLayer</h5><p>形状，主要和贝塞尔曲线结合，来绘制各种图形。</p>
+<h4 id="CAGradientLayer"><a href="#CAGradientLayer" class="headerlink" title="CAGradientLayer"></a>CAGradientLayer</h4><p>渐变色</p>
+<h4 id="CAReplicatorLayer"><a href="#CAReplicatorLayer" class="headerlink" title="CAReplicatorLayer"></a>CAReplicatorLayer</h4><p>可以做重影动画</p>
+<h4 id="CAEmitterLayer"><a href="#CAEmitterLayer" class="headerlink" title="CAEmitterLayer"></a>CAEmitterLayer</h4><p>粒子爆炸效果</p>
+
+    
+  </div>
+</article>
+
+
+   
+  <div class="text-center donation">
+    <div class="inner-donation">
+      <span class="btn-donation">支持一下</span>
+      <div class="donation-body">
+        <div class="tip text-center">扫一扫，支持ddSoul</div>
+        <ul class="theme.donation.items.length">
+        
+          <li class="item">
+            <img src="/images/weixin.png" alt="">
+          </li>
+        
+        </ul>
+      </div>
+    </div>
+  </div>
+
+
+   
+  <div class="box-prev-next clearfix">
+    <a class="show pull-left" href="/2017/01/05/Category/">
+        <i class="icon icon-angle-left"></i>
+    </a>
+    <a class="show pull-right" href="/2017/05/16/swift/">
+        <i class="icon icon-angle-right"></i>
+    </a>
+  </div>
+
+
+
+
+</div>
+
+
+  <a id="backTop" class="back-top">
+    <i class="icon-angle-up"></i>
+  </a>
+
+
+
+
+  <div class="modal" id="modal">
+  <span id="cover" class="cover hide"></span>
+  <div id="modal-dialog" class="modal-dialog hide-dialog">
+    <div class="modal-header">
+      <span id="close" class="btn-close">关闭</span>
+    </div>
+    <hr>
+    <div class="modal-body">
+      <ul class="list-toolbox">
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archives/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              博客
+            </a>
+          </li>
+        
+      </ul>
+
+    </div>
+  </div>
+</div>
+
+
+
+  
+      <div class="fexo-comments comments-post">
+    
+  <section class="disqus-comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+  </section>
+
+  <script>
+    var disqus_shortname = 'forsigner';
+    
+    var disqus_url = 'http://yoursite.com/2017/02/02/Core-Animation/';
+    
+    (function(){
+      var dsq = document.createElement('script');
+      dsq.type = 'text/javascript';
+      dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+  </script>
+
+  <script id="dsq-count-scr" src="//forsigner.disqus.com/count.js" async></script>
+
+
+
+    
+
+
+
+
+    
+
+  </div>
+
+  
+
+  <script type="text/javascript">
+  function loadScript(url, callback) {
+    var script = document.createElement('script')
+    script.type = 'text/javascript';
+
+    if (script.readyState) { //IE
+      script.onreadystatechange = function() {
+        if (script.readyState == 'loaded' ||
+          script.readyState == 'complete') {
+          script.onreadystatechange = null;
+          callback();
+        }
+      };
+    } else { //Others
+      script.onload = function() {
+        callback();
+      };
+    }
+
+    script.src = url;
+    document.getElementsByTagName('head')[0].appendChild(script);
+  }
+
+  window.onload = function() {
+    loadScript('/js/bundle.js?235683', function() {
+      // load success
+    });
+  }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+
+
+  <html class="light page-post">
+
+
+<head>
+  <meta charset="utf-8">
+  
+  <title>Category | ddSoul</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="ddSoul,Object-C,JavaScript,Swift," />
+  
+
+  <meta name="description" content="在日常的开发当中我们经常使用Category来处理一些问题，但是Category有个蛋疼的事，不能为原类添加属性。了解过Runtime的小伙伴都知道，我们可以利用runtime来解决这个问题。但是今天我们来了解一下Category为什么不能为原类添加属性。我们先来创建一个Book类，定义一个属性BookName。12345@interface Book : NSObject@property (n">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Category">
+<meta property="og:url" content="http://yoursite.com/2017/01/05/Category/index.html">
+<meta property="og:site_name" content="ddSoul">
+<meta property="og:description" content="在日常的开发当中我们经常使用Category来处理一些问题，但是Category有个蛋疼的事，不能为原类添加属性。了解过Runtime的小伙伴都知道，我们可以利用runtime来解决这个问题。但是今天我们来了解一下Category为什么不能为原类添加属性。我们先来创建一个Book类，定义一个属性BookName。12345@interface Book : NSObject@property (n">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2017-03-02T01:58:17.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Category">
+<meta name="twitter:description" content="在日常的开发当中我们经常使用Category来处理一些问题，但是Category有个蛋疼的事，不能为原类添加属性。了解过Runtime的小伙伴都知道，我们可以利用runtime来解决这个问题。但是今天我们来了解一下Category为什么不能为原类添加属性。我们先来创建一个Book类，定义一个属性BookName。12345@interface Book : NSObject@property (n">
+
+  
+
+  
+    <link rel="icon" href="/favicon.ico">
+  
+
+  <link href="/css/styles.css?v=c114cbe6" rel="stylesheet">
+
+
+  
+    <link rel="stylesheet" href="/css/personal-style.css">
+  
+
+  
+
+  
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?57e94d016e201fba3603a8a2b0263af0";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+  
+  <script type="text/javascript">
+	(function(){
+	    var bp = document.createElement('script');
+	    var curProtocol = window.location.protocol.split(':')[0];
+	    if (curProtocol === 'https') {
+	        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+	    }
+	    else {
+	        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+	    }
+	    var s = document.getElementsByTagName("script")[0];
+	    s.parentNode.insertBefore(bp, s);
+	})();
+  </script>
+
+
+
+  
+    <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  
+
+  
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.3.0/css/font-awesome.min.css">
+  
+</head>
+
+<body>
+
+
+  
+    <span id="toolbox-mobile" class="toolbox-mobile">盒子</span>
+  
+
+  <div class="post-header CENTER">
+   
+  <div class="toolbox">
+    <a class="toolbox-entry" href="/">
+      <span class="toolbox-entry-text">盒子</span>
+      <i class="icon-angle-down"></i>
+      <i class="icon-home"></i>
+    </a>
+    <ul class="list-toolbox">
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archives/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            博客
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+</div>
+
+
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-6"><a class="toc-link" href="#在日常的开发当中我们经常使用Category来处理一些问题，但是Category有个蛋疼的事，不能为原类添加属性。了解过Runtime的小伙伴都知道，我们可以利用runtime来解决这个问题。但是今天我们来了解一下Category为什么不能为原类添加属性。"><span class="toc-text">在日常的开发当中我们经常使用Category来处理一些问题，但是Category有个蛋疼的事，不能为原类添加属性。了解过Runtime的小伙伴都知道，我们可以利用runtime来解决这个问题。但是今天我们来了解一下Category为什么不能为原类添加属性。</span></a></li></ol>
+  </div>
+
+
+
+<div class="content content-post CENTER">
+   <article id="post-Category" class="article article-type-post" itemprop="blogPost">
+  <header class="article-header">
+    <h1 class="post-title">Category</h1>
+
+    <div class="article-meta">
+      <span>
+        <i class="icon-calendar"></i>
+        <span>2017.01.05</span>
+      </span>
+
+      
+        <span class="article-author">
+          <i class="icon-user"></i>
+          <span>Mr.deng</span>
+        </span>
+      
+
+      
+
+
+      
+        <span>
+          <i class="icon-comment"></i>
+          <a href="http://www.jianshu.com/u/2adde60e3bba/2017/01/05/Category/#disqus_thread"></a>
+        </span>
+      
+
+      
+      <i class="fa fa-eye"></i> 
+        <span id="busuanzi_container_page_pv">
+           &nbsp热度 <span id="busuanzi_value_page_pv">
+           <i class="fa fa-spinner fa-spin"></i></span>℃
+        </span>
+      
+
+      
+      
+    </div>
+  </header>
+
+  <div class="article-content">
+    
+      <h6 id="在日常的开发当中我们经常使用Category来处理一些问题，但是Category有个蛋疼的事，不能为原类添加属性。了解过Runtime的小伙伴都知道，我们可以利用runtime来解决这个问题。但是今天我们来了解一下Category为什么不能为原类添加属性。"><a href="#在日常的开发当中我们经常使用Category来处理一些问题，但是Category有个蛋疼的事，不能为原类添加属性。了解过Runtime的小伙伴都知道，我们可以利用runtime来解决这个问题。但是今天我们来了解一下Category为什么不能为原类添加属性。" class="headerlink" title="在日常的开发当中我们经常使用Category来处理一些问题，但是Category有个蛋疼的事，不能为原类添加属性。了解过Runtime的小伙伴都知道，我们可以利用runtime来解决这个问题。但是今天我们来了解一下Category为什么不能为原类添加属性。"></a>在日常的开发当中我们经常使用Category来处理一些问题，但是Category有个蛋疼的事，不能为原类添加属性。了解过Runtime的小伙伴都知道，我们可以利用runtime来解决这个问题。但是今天我们来了解一下Category为什么不能为原类添加属性。</h6><p>我们先来创建一个Book类，定义一个属性BookName。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">@interface Book : NSObject</span><br><span class="line"></span><br><span class="line">@property (nonatomic, copy) NSString *bookName;</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure></p>
+<p>再来创建一个分类，定义一个属性。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">@interface Book (Property)</span><br><span class="line"></span><br><span class="line">@property (nonatomic, copy) NSString *author;</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure></p>
+<p>这里大家要先了解一下属性的构成<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Property(属性) = ivar(实例变量) + setter + getter</span><br></pre></td></tr></table></figure></p>
+<p>接下来我们可以利用runtime来打印一下。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line">//获取类的成员变量</span><br><span class="line">- (void)getClassIvars &#123;</span><br><span class="line">    </span><br><span class="line">    unsigned int count;</span><br><span class="line">    </span><br><span class="line">    //获取成员变量的数组的指针</span><br><span class="line">    Ivar *ivars = class_copyIvarList([Book class], &amp;count);</span><br><span class="line">    </span><br><span class="line">    for (int i = 0; i &lt; count; i++) &#123;</span><br><span class="line">        Ivar ivar = ivars[i];</span><br><span class="line">        </span><br><span class="line">        //根据ivar获得其成员变量的名称</span><br><span class="line">        const char *name = ivar_getName(ivar);</span><br><span class="line">        //c的字符串转oc的字符串</span><br><span class="line">        NSString *key = [NSString stringWithUTF8String:name];</span><br><span class="line">        NSLog(@&quot;ivar__%d == %@&quot;,i,key);</span><br><span class="line">    &#125;</span><br><span class="line">    //记得释放</span><br><span class="line">    free(ivars);</span><br><span class="line">    //如果你的成员私有，也可以获取到 比如_education</span><br><span class="line">&#125;</span><br><span class="line">//获取类的成员属性</span><br><span class="line">- (void)getClassProperty &#123;</span><br><span class="line">    unsigned int count;</span><br><span class="line">    </span><br><span class="line">    //获得指向该类所有属性的指针</span><br><span class="line">    objc_property_t *properties = class_copyPropertyList([Book class], &amp;count);</span><br><span class="line">    </span><br><span class="line">    for (int i = 0; i &lt; count; i++) &#123;</span><br><span class="line">        //获取该类的一个属性的指针</span><br><span class="line">        objc_property_t property = properties[i];</span><br><span class="line">        //获取属性的名称</span><br><span class="line">        const char *name = property_getName(property);</span><br><span class="line">        //将c的字符串转化为OC字符串</span><br><span class="line">        NSString *key = [NSString stringWithUTF8String:name];</span><br><span class="line">        </span><br><span class="line">        NSLog(@&quot;propertyLabel__%d == %@&quot;,i,key);</span><br><span class="line">    &#125;</span><br><span class="line">    //记得释放</span><br><span class="line">    free(properties);</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>打印结果<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">2017-02-22 14:57:21.218 DDTool[1757:134117] ivar__0 == _bookName</span><br><span class="line">2017-02-22 14:57:21.219 DDTool[1757:134117] property__0 == author</span><br><span class="line">2017-02-22 14:57:21.219 DDTool[1757:134117] property__1 == bookName</span><br><span class="line">2017-02-22 14:57:21.219 DDTool[1757:134117] method__0 == bookName 2</span><br><span class="line">2017-02-22 14:57:21.219 DDTool[1757:134117] method__1 == setBookName: 3</span><br><span class="line">2017-02-22 14:57:21.219 DDTool[1757:134117] method__2 == .cxx_destruct 2</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>这里我们可能有一个疑惑，pro_list打印的结果中不是有author这个属性么(这个下面会说，我们先观察重点)，我们发现ivar_list打印的结果中只有_bookName这个实例变量，没有_author。这样我们就可以大概知道为什么添加不了属性了，没有满足属性的构成条件。</li>
+<li>接着上面的疑问来讲，其实这里打印的pro_list并非是上文所述的属性，它只是一个属性的描述。这里看到其他的博客上有讲到：<blockquote>
+<p>每次在增加一个属性,系统都会在ivar_list中添加一个成员变量的描述,在method_list中增加setter与getter方法的描述,在pro_list中增加一个属性的描述,然后计算该属性在对象中的偏移量,然后给出setter与getter方法对应的实现。</p>
+</blockquote>
+</li>
+</ul>
+<p>至于Category为什么没有生成ivar，是因为分类本身并不是一个真正的类，它并没有自己的isa。</p>
+<p>以上是自己在查阅资料后的一些浅层理解，不正确的、不足的地方还有望指出。😀<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">A--&gt;B</span><br></pre></td></tr></table></figure></p>
+
+    
+  </div>
+</article>
+
+
+   
+  <div class="text-center donation">
+    <div class="inner-donation">
+      <span class="btn-donation">支持一下</span>
+      <div class="donation-body">
+        <div class="tip text-center">扫一扫，支持ddSoul</div>
+        <ul class="theme.donation.items.length">
+        
+          <li class="item">
+            <img src="/images/weixin.png" alt="">
+          </li>
+        
+        </ul>
+      </div>
+    </div>
+  </div>
+
+
+   
+  <div class="box-prev-next clearfix">
+    <a class="show pull-left" href="/2016/11/25/导航栏问题/">
+        <i class="icon icon-angle-left"></i>
+    </a>
+    <a class="show pull-right" href="/2017/02/02/Core-Animation/">
+        <i class="icon icon-angle-right"></i>
+    </a>
+  </div>
+
+
+
+
+</div>
+
+
+  <a id="backTop" class="back-top">
+    <i class="icon-angle-up"></i>
+  </a>
+
+
+
+
+  <div class="modal" id="modal">
+  <span id="cover" class="cover hide"></span>
+  <div id="modal-dialog" class="modal-dialog hide-dialog">
+    <div class="modal-header">
+      <span id="close" class="btn-close">关闭</span>
+    </div>
+    <hr>
+    <div class="modal-body">
+      <ul class="list-toolbox">
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archives/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              博客
+            </a>
+          </li>
+        
+      </ul>
+
+    </div>
+  </div>
+</div>
+
+
+
+  
+      <div class="fexo-comments comments-post">
+    
+  <section class="disqus-comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+  </section>
+
+  <script>
+    var disqus_shortname = 'forsigner';
+    
+    var disqus_url = 'http://yoursite.com/2017/01/05/Category/';
+    
+    (function(){
+      var dsq = document.createElement('script');
+      dsq.type = 'text/javascript';
+      dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+  </script>
+
+  <script id="dsq-count-scr" src="//forsigner.disqus.com/count.js" async></script>
+
+
+
+    
+
+
+
+
+    
+
+  </div>
+
+  
+
+  <script type="text/javascript">
+  function loadScript(url, callback) {
+    var script = document.createElement('script')
+    script.type = 'text/javascript';
+
+    if (script.readyState) { //IE
+      script.onreadystatechange = function() {
+        if (script.readyState == 'loaded' ||
+          script.readyState == 'complete') {
+          script.onreadystatechange = null;
+          callback();
+        }
+      };
+    } else { //Others
+      script.onload = function() {
+        callback();
+      };
+    }
+
+    script.src = url;
+    document.getElementsByTagName('head')[0].appendChild(script);
+  }
+
+  window.onload = function() {
+    loadScript('/js/bundle.js?235683', function() {
+      // load success
+    });
+  }
+</script>
+
+</body>
+</html>

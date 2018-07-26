@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+
+
+  <html class="light page-post">
+
+
+<head>
+  <meta charset="utf-8">
+  
+  <title>逆向工程 | ddSoul</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="ddSoul,Object-C,JavaScript,Swift," />
+  
+
+  <meta name="description" content="最近看到APP安全这块问题，就想尝试一下逆向工程这块。毕竟防御的基本就是知道怎么去破解或者攻击。本文就记录一下，小白尝试逆向工程，希望有兴趣的同学可以一起学习。 ######工具  IDA  （反编译工具）可以下载尝试一下。 Hopper Disassembler（ 反编译工具）这个没用到，听说也很好用 Reveal .看图层的工具  ######需要的一些原料  ipa文件  ######需要了">
+<meta property="og:type" content="article">
+<meta property="og:title" content="逆向工程">
+<meta property="og:url" content="http://yoursite.com/2016/10/20/逆向工程/index.html">
+<meta property="og:site_name" content="ddSoul">
+<meta property="og:description" content="最近看到APP安全这块问题，就想尝试一下逆向工程这块。毕竟防御的基本就是知道怎么去破解或者攻击。本文就记录一下，小白尝试逆向工程，希望有兴趣的同学可以一起学习。 ######工具  IDA  （反编译工具）可以下载尝试一下。 Hopper Disassembler（ 反编译工具）这个没用到，听说也很好用 Reveal .看图层的工具  ######需要的一些原料  ipa文件  ######需要了">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1290657-c43e5d7a71d63bc7.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1290657-2a1aa2195a542aa4.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1290657-a8a98645d56f56f5.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1290657-0c127baa07327367.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1290657-6d54f5b117052de9.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1290657-7d701fdf88605dc1.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1290657-9a26ea9bdce5b39c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1290657-6a951a4f5a6600d9.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:updated_time" content="2017-03-01T12:15:03.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="逆向工程">
+<meta name="twitter:description" content="最近看到APP安全这块问题，就想尝试一下逆向工程这块。毕竟防御的基本就是知道怎么去破解或者攻击。本文就记录一下，小白尝试逆向工程，希望有兴趣的同学可以一起学习。 ######工具  IDA  （反编译工具）可以下载尝试一下。 Hopper Disassembler（ 反编译工具）这个没用到，听说也很好用 Reveal .看图层的工具  ######需要的一些原料  ipa文件  ######需要了">
+<meta name="twitter:image" content="http://upload-images.jianshu.io/upload_images/1290657-c43e5d7a71d63bc7.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+
+  
+
+  
+    <link rel="icon" href="/favicon.ico">
+  
+
+  <link href="/css/styles.css?v=c114cbe6" rel="stylesheet">
+
+
+  
+    <link rel="stylesheet" href="/css/personal-style.css">
+  
+
+  
+
+  
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?57e94d016e201fba3603a8a2b0263af0";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+  
+  <script type="text/javascript">
+	(function(){
+	    var bp = document.createElement('script');
+	    var curProtocol = window.location.protocol.split(':')[0];
+	    if (curProtocol === 'https') {
+	        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+	    }
+	    else {
+	        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+	    }
+	    var s = document.getElementsByTagName("script")[0];
+	    s.parentNode.insertBefore(bp, s);
+	})();
+  </script>
+
+
+
+  
+    <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  
+
+  
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.3.0/css/font-awesome.min.css">
+  
+</head>
+
+<body>
+
+
+  
+    <span id="toolbox-mobile" class="toolbox-mobile">盒子</span>
+  
+
+  <div class="post-header CENTER">
+   
+  <div class="toolbox">
+    <a class="toolbox-entry" href="/">
+      <span class="toolbox-entry-text">盒子</span>
+      <i class="icon-angle-down"></i>
+      <i class="icon-home"></i>
+    </a>
+    <ul class="list-toolbox">
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archives/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            博客
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+</div>
+
+
+
+
+<div class="content content-post CENTER">
+   <article id="post-逆向工程" class="article article-type-post" itemprop="blogPost">
+  <header class="article-header">
+    <h1 class="post-title">逆向工程</h1>
+
+    <div class="article-meta">
+      <span>
+        <i class="icon-calendar"></i>
+        <span>2016.10.20</span>
+      </span>
+
+      
+        <span class="article-author">
+          <i class="icon-user"></i>
+          <span>Mr.deng</span>
+        </span>
+      
+
+      
+
+
+      
+        <span>
+          <i class="icon-comment"></i>
+          <a href="http://www.jianshu.com/u/2adde60e3bba/2016/10/20/逆向工程/#disqus_thread"></a>
+        </span>
+      
+
+      
+      <i class="fa fa-eye"></i> 
+        <span id="busuanzi_container_page_pv">
+           &nbsp热度 <span id="busuanzi_value_page_pv">
+           <i class="fa fa-spinner fa-spin"></i></span>℃
+        </span>
+      
+
+      
+      
+    </div>
+  </header>
+
+  <div class="article-content">
+    
+      <p>最近看到APP安全这块问题，就想尝试一下逆向工程这块。毕竟防御的基本就是知道怎么去破解或者攻击。本文就记录一下，小白尝试逆向工程，希望有兴趣的同学可以一起学习。</p>
+<p>######工具</p>
+<ul>
+<li><a href="https://www.hex-rays.com/products/ida/support/download_demo.shtml" target="_blank" rel="noopener">IDA</a>  （反编译工具）可以下载尝试一下。</li>
+<li>Hopper Disassembler（ 反编译工具）这个没用到，听说也很好用</li>
+<li>Reveal .看图层的工具</li>
+</ul>
+<p>######需要的一些原料</p>
+<ul>
+<li>ipa文件</li>
+</ul>
+<p>######需要了解的一些小知识</p>
+<ul>
+<li>App Store里面的APP是将我们上传的ipa文件加了层壳。我们如果直接直接通过iTunes获取的ipa包是需要进行脱壳的。当然越狱设备可以通过iTool、苹果助手这些辅助软件直接获取到脱壳后的ipa文件的，文章中我们只是为了尝试，可以自己先制作一个ipa文件用来测试玩玩。至于越狱设备获取的办法我们可以到<a href="http://www.baidu.com" target="_blank" rel="noopener">百度</a>搜索一下。</li>
+<li>自己制作ipa步骤在下面说一下。</li>
+</ul>
+<p>######开始尝试</p>
+<ul>
+<li>打开我们的IDA</li>
+</ul>
+<p><img src="http://upload-images.jianshu.io/upload_images/1290657-c43e5d7a71d63bc7.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="IDA_logo.png"></p>
+<ul>
+<li>页面中好多东西还不太清楚，需要揣摩揣摩。</li>
+</ul>
+<p><img src="http://upload-images.jianshu.io/upload_images/1290657-2a1aa2195a542aa4.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="IDA_window.png"></p>
+<ul>
+<li>给我们制作的ipa文件拖入</li>
+</ul>
+<p><img src="http://upload-images.jianshu.io/upload_images/1290657-a8a98645d56f56f5.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="code.png"></p>
+<p>我们观察一下，左边列表的几个方法，就是我们在Xcode里面编写的方法。<br><img src="http://upload-images.jianshu.io/upload_images/1290657-0c127baa07327367.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="XodeCode.png"><br>到这里我们就能大概的看到点什么东西了，至于里面具体的，我们还需要自己琢磨琢磨。</p>
+<p>######ipa文件的制作</p>
+<ul>
+<li>抓过APP图片的大概都知道，我们将iTunes里面的ipa，通过-&gt;改zip-&gt;找Payload-&gt;找到app包内容-&gt;找到一大堆文件，里面有图片，plist这些的。感兴趣的同学可以<a href="http://www.jianshu.com/p/6ca768c5d16c" target="_blank" rel="noopener">这里看一看</a>.<br>我们制作ipa文件正好给这个反一下。<br>1.我们将我们的工程Archive一下，得到<br><img src="http://upload-images.jianshu.io/upload_images/1290657-6d54f5b117052de9.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="1.png"><br>2.show in finder<br><img src="http://upload-images.jianshu.io/upload_images/1290657-7d701fdf88605dc1.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="2.png"><br>3.显示包内容<br><img src="http://upload-images.jianshu.io/upload_images/1290657-9a26ea9bdce5b39c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="3.png"><br>4.找到它<br><img src="http://upload-images.jianshu.io/upload_images/1290657-6a951a4f5a6600d9.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="4.png"><br>5.新建个空文件夹，名字 <strong>Payload</strong><br>6.将步骤4的文件放入，之后压缩，改后缀zip为ipa。</li>
+</ul>
+<p>######完成</p>
+<p>不足的地方还望支出😀</p>
+
+    
+  </div>
+</article>
+
+
+   
+  <div class="text-center donation">
+    <div class="inner-donation">
+      <span class="btn-donation">支持一下</span>
+      <div class="donation-body">
+        <div class="tip text-center">扫一扫，支持ddSoul</div>
+        <ul class="theme.donation.items.length">
+        
+          <li class="item">
+            <img src="/images/weixin.png" alt="">
+          </li>
+        
+        </ul>
+      </div>
+    </div>
+  </div>
+
+
+   
+  <div class="box-prev-next clearfix">
+    <a class="show pull-left" href="/2016/08/10/蓝牙开发/">
+        <i class="icon icon-angle-left"></i>
+    </a>
+    <a class="show pull-right" href="/2016/11/06/UUID-KeyChain/">
+        <i class="icon icon-angle-right"></i>
+    </a>
+  </div>
+
+
+
+
+</div>
+
+
+  <a id="backTop" class="back-top">
+    <i class="icon-angle-up"></i>
+  </a>
+
+
+
+
+  <div class="modal" id="modal">
+  <span id="cover" class="cover hide"></span>
+  <div id="modal-dialog" class="modal-dialog hide-dialog">
+    <div class="modal-header">
+      <span id="close" class="btn-close">关闭</span>
+    </div>
+    <hr>
+    <div class="modal-body">
+      <ul class="list-toolbox">
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archives/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              博客
+            </a>
+          </li>
+        
+      </ul>
+
+    </div>
+  </div>
+</div>
+
+
+
+  
+      <div class="fexo-comments comments-post">
+    
+  <section class="disqus-comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+  </section>
+
+  <script>
+    var disqus_shortname = 'forsigner';
+    
+    var disqus_url = 'http://yoursite.com/2016/10/20/逆向工程/';
+    
+    (function(){
+      var dsq = document.createElement('script');
+      dsq.type = 'text/javascript';
+      dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+  </script>
+
+  <script id="dsq-count-scr" src="//forsigner.disqus.com/count.js" async></script>
+
+
+
+    
+
+
+
+
+    
+
+  </div>
+
+  
+
+  <script type="text/javascript">
+  function loadScript(url, callback) {
+    var script = document.createElement('script')
+    script.type = 'text/javascript';
+
+    if (script.readyState) { //IE
+      script.onreadystatechange = function() {
+        if (script.readyState == 'loaded' ||
+          script.readyState == 'complete') {
+          script.onreadystatechange = null;
+          callback();
+        }
+      };
+    } else { //Others
+      script.onload = function() {
+        callback();
+      };
+    }
+
+    script.src = url;
+    document.getElementsByTagName('head')[0].appendChild(script);
+  }
+
+  window.onload = function() {
+    loadScript('/js/bundle.js?235683', function() {
+      // load success
+    });
+  }
+</script>
+
+</body>
+</html>

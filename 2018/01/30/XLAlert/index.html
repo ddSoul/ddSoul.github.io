@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+
+
+  <html class="light page-post">
+
+
+<head>
+  <meta charset="utf-8">
+  
+  <title>UIAlertController不一样的用法 | ddSoul</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="ddSoul,Object-C,JavaScript,Swift," />
+  
+
+  <meta name="description" content="项目中许多地方用到UIAlertController，既然苹果在iOS8之后出现这个，说明苹果还是倡导使用。虽然写起来比UIAlertView好点，但是还是比较重的感觉。自己就给UIAlertController做了简单的封装，但是仍然有很多不足的地方，抛砖引玉😀  自己封装的想法1.参考Masnory的代码，自己将方法的调用改为链式。2.将一些常用的UI的需求扒出来。 具体实现的代码部分12">
+<meta property="og:type" content="article">
+<meta property="og:title" content="UIAlertController不一样的用法">
+<meta property="og:url" content="http://yoursite.com/2018/01/30/XLAlert/index.html">
+<meta property="og:site_name" content="ddSoul">
+<meta property="og:description" content="项目中许多地方用到UIAlertController，既然苹果在iOS8之后出现这个，说明苹果还是倡导使用。虽然写起来比UIAlertView好点，但是还是比较重的感觉。自己就给UIAlertController做了简单的封装，但是仍然有很多不足的地方，抛砖引玉😀  自己封装的想法1.参考Masnory的代码，自己将方法的调用改为链式。2.将一些常用的UI的需求扒出来。 具体实现的代码部分12">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2018-01-30T09:09:33.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="UIAlertController不一样的用法">
+<meta name="twitter:description" content="项目中许多地方用到UIAlertController，既然苹果在iOS8之后出现这个，说明苹果还是倡导使用。虽然写起来比UIAlertView好点，但是还是比较重的感觉。自己就给UIAlertController做了简单的封装，但是仍然有很多不足的地方，抛砖引玉😀  自己封装的想法1.参考Masnory的代码，自己将方法的调用改为链式。2.将一些常用的UI的需求扒出来。 具体实现的代码部分12">
+
+  
+
+  
+    <link rel="icon" href="/favicon.ico">
+  
+
+  <link href="/css/styles.css?v=c114cbe6" rel="stylesheet">
+
+
+  
+    <link rel="stylesheet" href="/css/personal-style.css">
+  
+
+  
+
+  
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?57e94d016e201fba3603a8a2b0263af0";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+  
+  <script type="text/javascript">
+	(function(){
+	    var bp = document.createElement('script');
+	    var curProtocol = window.location.protocol.split(':')[0];
+	    if (curProtocol === 'https') {
+	        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+	    }
+	    else {
+	        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+	    }
+	    var s = document.getElementsByTagName("script")[0];
+	    s.parentNode.insertBefore(bp, s);
+	})();
+  </script>
+
+
+
+  
+    <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  
+
+  
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.3.0/css/font-awesome.min.css">
+  
+</head>
+
+<body>
+
+
+  
+    <span id="toolbox-mobile" class="toolbox-mobile">盒子</span>
+  
+
+  <div class="post-header CENTER">
+   
+  <div class="toolbox">
+    <a class="toolbox-entry" href="/">
+      <span class="toolbox-entry-text">盒子</span>
+      <i class="icon-angle-down"></i>
+      <i class="icon-home"></i>
+    </a>
+    <ul class="list-toolbox">
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archives/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            博客
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+</div>
+
+
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#自己封装的想法"><span class="toc-text">自己封装的想法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#具体实现的代码部分"><span class="toc-text">具体实现的代码部分</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#使用方法"><span class="toc-text">使用方法</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#代码部分："><span class="toc-text">代码部分：</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#注意："><span class="toc-text">注意：</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#效果图"><span class="toc-text">效果图</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#最后"><span class="toc-text">最后</span></a></li></ol>
+  </div>
+
+
+
+<div class="content content-post CENTER">
+   <article id="post-XLAlert" class="article article-type-post" itemprop="blogPost">
+  <header class="article-header">
+    <h1 class="post-title">UIAlertController不一样的用法</h1>
+
+    <div class="article-meta">
+      <span>
+        <i class="icon-calendar"></i>
+        <span>2018.01.30</span>
+      </span>
+
+      
+        <span class="article-author">
+          <i class="icon-user"></i>
+          <span>Mr.deng</span>
+        </span>
+      
+
+      
+
+
+      
+        <span>
+          <i class="icon-comment"></i>
+          <a href="http://www.jianshu.com/u/2adde60e3bba/2018/01/30/XLAlert/#disqus_thread"></a>
+        </span>
+      
+
+      
+      <i class="fa fa-eye"></i> 
+        <span id="busuanzi_container_page_pv">
+           &nbsp热度 <span id="busuanzi_value_page_pv">
+           <i class="fa fa-spinner fa-spin"></i></span>℃
+        </span>
+      
+
+      
+      
+    </div>
+  </header>
+
+  <div class="article-content">
+    
+      <blockquote>
+<p>项目中许多地方用到UIAlertController，既然苹果在iOS8之后出现这个，说明苹果还是倡导使用。虽然写起来比UIAlertView好点，但是还是比较重的感觉。自己就给UIAlertController做了简单的封装，但是仍然有很多不足的地方，抛砖引玉😀</p>
+</blockquote>
+<h3 id="自己封装的想法"><a href="#自己封装的想法" class="headerlink" title="自己封装的想法"></a>自己封装的想法</h3><p>1.参考Masnory的代码，自己将方法的调用改为链式。<br>2.将一些常用的UI的需求扒出来。</p>
+<h3 id="具体实现的代码部分"><a href="#具体实现的代码部分" class="headerlink" title="具体实现的代码部分"></a>具体实现的代码部分</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line">* title:</span><br><span class="line">* message:</span><br><span class="line">* leftButtonTitle:</span><br><span class="line">* rightButtonTitle:</span><br><span class="line">* lelfColor:</span><br><span class="line">* rightColor:</span><br><span class="line">* titsuerHandlerle:</span><br><span class="line">* cancelHandler:</span><br><span class="line">*/</span><br><span class="line">- (XLAlert * (^)(NSString *title)) title;</span><br><span class="line">- (XLAlert * (^)(NSString *message)) message;</span><br><span class="line">- (XLAlert * (^)(NSString *sureButtonTitle)) sureButtonTitle;</span><br><span class="line">- (XLAlert * (^)(NSString *cancelButtonTitle)) cancelButtonTitle;</span><br><span class="line"></span><br><span class="line">- (XLAlert * (^)(UIColor *sureButtonColor)) sureButtonColor;</span><br><span class="line">- (XLAlert * (^)(UIColor *cancleButtonColor)) cancleButtonColor;</span><br><span class="line"></span><br><span class="line">- (XLAlert * (^)(Surehandler handler)) suerHandler;</span><br><span class="line">- (XLAlert * (^)(Cancelhandler handler)) cancelHandler;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line">* 呈现</span><br><span class="line">*/</span><br><span class="line">- (XLAlert * (^)(void))show;</span><br></pre></td></tr></table></figure>
+<h3 id="使用方法"><a href="#使用方法" class="headerlink" title="使用方法"></a>使用方法</h3><h5 id="代码部分："><a href="#代码部分：" class="headerlink" title="代码部分："></a>代码部分：</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">Surehandler sureHandler = ^(UIAlertAction *action) &#123;</span><br><span class="line">NSLog(@&quot;...............你点击了确认&quot;);</span><br><span class="line">&#125;;</span><br><span class="line">Cancelhandler cancelhandler = ^(UIAlertAction *action) &#123;</span><br><span class="line">NSLog(@&quot;...............你点击了取消&quot;);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">XLAlert.shareAlert.</span><br><span class="line">title(@&quot;提示&quot;).</span><br><span class="line">message(@&quot;hello\n world&quot;).</span><br><span class="line">style(1).</span><br><span class="line">sureButtonColor([UIColor greenColor]).</span><br><span class="line">cancleButtonColor([UIColor orangeColor]).</span><br><span class="line">sureButtonTitle(@&quot;ok&quot;).</span><br><span class="line">cancelButtonTitle(@&quot;不ok&quot;).</span><br><span class="line">presentViewController(self).</span><br><span class="line">suerHandler(sureHandler).</span><br><span class="line">cancelHandler(cancelhandler).</span><br><span class="line">show();</span><br></pre></td></tr></table></figure>
+<h5 id="注意："><a href="#注意：" class="headerlink" title="注意："></a>注意：</h5><p>1.Surehandler、Cancelhandler是确认取消的点击处理。<br>可以不实现，默认一个确认按钮。<br>2.show()方法是必须得.的。<br>3.persentViewController(self)是需要呈现在的控制器，也是必须的。</p>
+<h3 id="效果图"><a href="#效果图" class="headerlink" title="效果图"></a>效果图</h3><p><a href=""></a></p>
+<h3 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h3><p>老规矩，上代码，不足地方望指出。<br><a href="https://github.com/ddSoul/XLAlert.git" target="_blank" rel="noopener">代码</a></p>
+
+    
+  </div>
+</article>
+
+
+   
+  <div class="text-center donation">
+    <div class="inner-donation">
+      <span class="btn-donation">支持一下</span>
+      <div class="donation-body">
+        <div class="tip text-center">扫一扫，支持ddSoul</div>
+        <ul class="theme.donation.items.length">
+        
+          <li class="item">
+            <img src="/images/weixin.png" alt="">
+          </li>
+        
+        </ul>
+      </div>
+    </div>
+  </div>
+
+
+   
+  <div class="box-prev-next clearfix">
+    <a class="show pull-left" href="/2017/11/23/小结/">
+        <i class="icon icon-angle-left"></i>
+    </a>
+    <a class="hide pull-right" href="/">
+        <i class="icon icon-angle-right"></i>
+    </a>
+  </div>
+
+
+
+
+</div>
+
+
+  <a id="backTop" class="back-top">
+    <i class="icon-angle-up"></i>
+  </a>
+
+
+
+
+  <div class="modal" id="modal">
+  <span id="cover" class="cover hide"></span>
+  <div id="modal-dialog" class="modal-dialog hide-dialog">
+    <div class="modal-header">
+      <span id="close" class="btn-close">关闭</span>
+    </div>
+    <hr>
+    <div class="modal-body">
+      <ul class="list-toolbox">
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archives/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              博客
+            </a>
+          </li>
+        
+      </ul>
+
+    </div>
+  </div>
+</div>
+
+
+
+  
+      <div class="fexo-comments comments-post">
+    
+  <section class="disqus-comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+  </section>
+
+  <script>
+    var disqus_shortname = 'forsigner';
+    
+    var disqus_url = 'http://yoursite.com/2018/01/30/XLAlert/';
+    
+    (function(){
+      var dsq = document.createElement('script');
+      dsq.type = 'text/javascript';
+      dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+  </script>
+
+  <script id="dsq-count-scr" src="//forsigner.disqus.com/count.js" async></script>
+
+
+
+    
+
+
+
+
+    
+
+  </div>
+
+  
+
+  <script type="text/javascript">
+  function loadScript(url, callback) {
+    var script = document.createElement('script')
+    script.type = 'text/javascript';
+
+    if (script.readyState) { //IE
+      script.onreadystatechange = function() {
+        if (script.readyState == 'loaded' ||
+          script.readyState == 'complete') {
+          script.onreadystatechange = null;
+          callback();
+        }
+      };
+    } else { //Others
+      script.onload = function() {
+        callback();
+      };
+    }
+
+    script.src = url;
+    document.getElementsByTagName('head')[0].appendChild(script);
+  }
+
+  window.onload = function() {
+    loadScript('/js/bundle.js?235683', function() {
+      // load success
+    });
+  }
+</script>
+
+</body>
+</html>
