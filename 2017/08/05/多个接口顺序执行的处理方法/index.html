@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+
+
+  <html class="light page-post">
+
+
+<head>
+  <meta charset="utf-8">
+  
+  <title>多个接口顺序执行的处理方法 | ddSoul</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="ddSoul,Object-C,JavaScript,Swift," />
+  
+
+  <meta name="description" content="通过添加线程依赖和信号量结合实现一个复杂界面请求多个接口时按指定顺序执行 线程依赖关系和GCD的信号量相结合来实现  123456789101112131415161718192021-(void)dispatchAllRequest&amp;#123;// 利用线程依赖关系测试__weak typeof (self)weakSelf =self;NSBlockOperation * operation1">
+<meta property="og:type" content="article">
+<meta property="og:title" content="多个接口顺序执行的处理方法">
+<meta property="og:url" content="http://yoursite.com/2017/08/05/多个接口顺序执行的处理方法/index.html">
+<meta property="og:site_name" content="ddSoul">
+<meta property="og:description" content="通过添加线程依赖和信号量结合实现一个复杂界面请求多个接口时按指定顺序执行 线程依赖关系和GCD的信号量相结合来实现  123456789101112131415161718192021-(void)dispatchAllRequest&amp;#123;// 利用线程依赖关系测试__weak typeof (self)weakSelf =self;NSBlockOperation * operation1">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2018-08-20T02:46:32.804Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="多个接口顺序执行的处理方法">
+<meta name="twitter:description" content="通过添加线程依赖和信号量结合实现一个复杂界面请求多个接口时按指定顺序执行 线程依赖关系和GCD的信号量相结合来实现  123456789101112131415161718192021-(void)dispatchAllRequest&amp;#123;// 利用线程依赖关系测试__weak typeof (self)weakSelf =self;NSBlockOperation * operation1">
+
+  
+
+  
+    <link rel="icon" href="/favicon.ico">
+  
+
+  <link href="/css/styles.css?v=c114cbe6" rel="stylesheet">
+
+
+  
+    <link rel="stylesheet" href="/css/personal-style.css">
+  
+
+  
+
+  
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?57e94d016e201fba3603a8a2b0263af0";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+  
+  <script type="text/javascript">
+	(function(){
+	    var bp = document.createElement('script');
+	    var curProtocol = window.location.protocol.split(':')[0];
+	    if (curProtocol === 'https') {
+	        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+	    }
+	    else {
+	        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+	    }
+	    var s = document.getElementsByTagName("script")[0];
+	    s.parentNode.insertBefore(bp, s);
+	})();
+  </script>
+
+
+
+  
+    <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  
+
+  
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.3.0/css/font-awesome.min.css">
+  
+</head>
+
+<body>
+
+
+  
+    <span id="toolbox-mobile" class="toolbox-mobile">盒子</span>
+  
+
+  <div class="post-header CENTER">
+   
+  <div class="toolbox">
+    <a class="toolbox-entry" href="/">
+      <span class="toolbox-entry-text">盒子</span>
+      <i class="icon-angle-down"></i>
+      <i class="icon-home"></i>
+    </a>
+    <ul class="list-toolbox">
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archives/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            博客
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+</div>
+
+
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#通过添加线程依赖和信号量结合实现一个复杂界面请求多个接口时按指定顺序执行"><span class="toc-text">通过添加线程依赖和信号量结合实现一个复杂界面请求多个接口时按指定顺序执行</span></a></li></ol>
+  </div>
+
+
+
+<div class="content content-post CENTER">
+   <article id="post-多个接口顺序执行的处理方法" class="article article-type-post" itemprop="blogPost">
+  <header class="article-header">
+    <h1 class="post-title">多个接口顺序执行的处理方法</h1>
+
+    <div class="article-meta">
+      <span>
+        <i class="icon-calendar"></i>
+        <span>2017.08.05</span>
+      </span>
+
+      
+        <span class="article-author">
+          <i class="icon-user"></i>
+          <span>Mr.deng</span>
+        </span>
+      
+
+      
+
+
+      
+        <span>
+          <i class="icon-comment"></i>
+          <a href="http://www.jianshu.com/u/2adde60e3bba/2017/08/05/多个接口顺序执行的处理方法/#disqus_thread"></a>
+        </span>
+      
+
+      
+      <i class="fa fa-eye"></i> 
+        <span id="busuanzi_container_page_pv">
+           &nbsp热度 <span id="busuanzi_value_page_pv">
+           <i class="fa fa-spinner fa-spin"></i></span>℃
+        </span>
+      
+
+      
+      
+    </div>
+  </header>
+
+  <div class="article-content">
+    
+      <h2 id="通过添加线程依赖和信号量结合实现一个复杂界面请求多个接口时按指定顺序执行"><a href="#通过添加线程依赖和信号量结合实现一个复杂界面请求多个接口时按指定顺序执行" class="headerlink" title="通过添加线程依赖和信号量结合实现一个复杂界面请求多个接口时按指定顺序执行"></a>通过添加线程依赖和信号量结合实现一个复杂界面请求多个接口时按指定顺序执行</h2><blockquote>
+<p>线程依赖关系和GCD的信号量相结合来实现</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">-(void)dispatchAllRequest&#123;</span><br><span class="line">// 利用线程依赖关系测试</span><br><span class="line">__weak typeof (self)weakSelf =self;</span><br><span class="line"></span><br><span class="line">NSBlockOperation * operation1 = [NSBlockOperation blockOperationWithBlock:^&#123;</span><br><span class="line">[weakSelf requestA];</span><br><span class="line"></span><br><span class="line">&#125;];</span><br><span class="line">NSBlockOperation * operation2 = [NSBlockOperation blockOperationWithBlock:^&#123;</span><br><span class="line">[weakSelf requestB];</span><br><span class="line"></span><br><span class="line">&#125;];</span><br><span class="line">NSBlockOperation * operation3 = [NSBlockOperation blockOperationWithBlock:^&#123;</span><br><span class="line">[weakSelf requestC];</span><br><span class="line"></span><br><span class="line">&#125;];</span><br><span class="line">[operation2 addDependency:operation1];</span><br><span class="line">[operation3 addDependency:operation2];</span><br><span class="line">NSOperationQueue * queue = [[NSOperationQueue alloc]init];</span><br><span class="line">[queue addOperations:@[operation1,operation2,operation3] waitUntilFinished:NO];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br></pre></td><td class="code"><pre><span class="line">-(void)requestA&#123;</span><br><span class="line"></span><br><span class="line">//创建信号量并设置计数默认为0</span><br><span class="line">dispatch_semaphore_t sema = dispatch_semaphore_create(0);</span><br><span class="line"></span><br><span class="line">AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];;</span><br><span class="line">manager.responseSerializer = [AFHTTPResponseSerializer serializer];</span><br><span class="line">manager.responseSerializer.acceptableContentTypes = [NSSet setWithObjects:@&quot;application/json&quot;, @&quot;text/json&quot;, @&quot;text/javascript&quot;,@&quot;text/html&quot;,nil];</span><br><span class="line">[manager GET:@&quot;http://qr.bookln.cn/qr.html?crcode=110000000F00000000000000B3ZX1CEC&quot; parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) &#123;</span><br><span class="line"></span><br><span class="line">dispatch_semaphore_signal(sema);</span><br><span class="line">NSLog(@&quot;正在执行A&quot;);</span><br><span class="line"></span><br><span class="line">&#125; failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) &#123;</span><br><span class="line">////计数+1操作</span><br><span class="line"></span><br><span class="line">dispatch_semaphore_signal(sema);</span><br><span class="line">NSLog(@&quot;执行错误A&quot;);</span><br><span class="line"></span><br><span class="line">&#125;];</span><br><span class="line"></span><br><span class="line">NSLog(@&quot;正在刷新A&quot;);</span><br><span class="line">//若计数为0则一直等待</span><br><span class="line">dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);</span><br><span class="line">NSLog(@&quot;已经刷新A&quot;);</span><br><span class="line">&#125;</span><br><span class="line">-(void)requestB&#123;</span><br><span class="line">//创建信号量并设置计数默认为0</span><br><span class="line">dispatch_semaphore_t sema = dispatch_semaphore_create(0);</span><br><span class="line"></span><br><span class="line">AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];;</span><br><span class="line">manager.responseSerializer = [AFHTTPResponseSerializer serializer];</span><br><span class="line">manager.responseSerializer.acceptableContentTypes = [NSSet setWithObjects:@&quot;application/json&quot;, @&quot;text/json&quot;, @&quot;text/javascript&quot;,@&quot;text/html&quot;,nil];</span><br><span class="line">[manager GET:@&quot;http://qr.bookln.cn/qr.html?crcode=110000000F00000000000000B3ZX1CEC&quot; parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) &#123;</span><br><span class="line">dispatch_semaphore_signal(sema);</span><br><span class="line">NSLog(@&quot;正在执行B&quot;);</span><br><span class="line"></span><br><span class="line">&#125; failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) &#123;</span><br><span class="line">////计数+1操作</span><br><span class="line"></span><br><span class="line">dispatch_semaphore_signal(sema);</span><br><span class="line">NSLog(@&quot;执行错误B&quot;);</span><br><span class="line"></span><br><span class="line">&#125;];</span><br><span class="line"></span><br><span class="line">NSLog(@&quot;正在刷新B&quot;);</span><br><span class="line">//若计数为0则一直等待</span><br><span class="line">dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);</span><br><span class="line">NSLog(@&quot;已经刷新B&quot;);</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">-(void)requestC&#123;</span><br><span class="line"></span><br><span class="line">//创建信号量并设置计数默认为0</span><br><span class="line">dispatch_semaphore_t sema = dispatch_semaphore_create(0);</span><br><span class="line"></span><br><span class="line">AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];;</span><br><span class="line">manager.responseSerializer = [AFHTTPResponseSerializer serializer];</span><br><span class="line">manager.responseSerializer.acceptableContentTypes = [NSSet setWithObjects:@&quot;application/json&quot;, @&quot;text/json&quot;, @&quot;text/javascript&quot;,@&quot;text/html&quot;,nil];</span><br><span class="line">[manager GET:@&quot;http://qr.bookln.cn/qr.html?crcode=110000000F00000000000000B3ZX1CEC&quot; parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) &#123;</span><br><span class="line">dispatch_semaphore_signal(sema);</span><br><span class="line">NSLog(@&quot;正在执行C&quot;);</span><br><span class="line"></span><br><span class="line">&#125; failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) &#123;</span><br><span class="line">////计数+1操作</span><br><span class="line"></span><br><span class="line">dispatch_semaphore_signal(sema);</span><br><span class="line">NSLog(@&quot;执行错误C&quot;);</span><br><span class="line"></span><br><span class="line">&#125;];</span><br><span class="line"></span><br><span class="line">NSLog(@&quot;正在刷新C&quot;);</span><br><span class="line">//若计数为0则一直等待</span><br><span class="line">dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);</span><br><span class="line">NSLog(@&quot;已经刷新C&quot;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>附：</p>
+<blockquote>
+<p> 关于信号量<br>信号量：就是一种可用来控制访问资源的数量的标识，设定了一个信号量，在线程访问之前，加上信号量的处理，则可告知系统按照我们指定的信号量数量来执行多个线程。<br>其实，这有点类似锁机制了，只不过信号量都是系统帮助我们处理了，我们只需要在执行线程之前，设定一个信号量值，并且在使用时，加上信号量处理方法就行了。<br>信号量为0则阻塞线程，大于0则不会阻塞。因此我们可以通过改变信号量的值，来控制是否阻塞线程，从而达到线程同步。<br>在GCD中有三个函数是semaphore的操作，分别是：<br>　　dispatch_semaphore_create　　　创建一个semaphore<br>　　　　dispatch_semaphore_signal　　　发送一个信号<br>　　　　　　dispatch_semaphore_wait　　　　等待信号<br>　　　　　　　　简单的介绍一下这三个函数，第一个函数有一个整形的参数，我们可以理解为信号的总量，dispatch_semaphore_signal是发送一个信号，自然会让信号总量加1，dispatch_semaphore_wait等待信号，当信号总量少于0的时候就会一直等待，否则就可以正常的执行，并让信号总量-1，根据这样的原理，我们便可以快速的创建一个并发控制来同步任务和有限资源访问控制。<br>　　　　　　　　<br>　　　　　　　　<br>　　　　　　　　<br>　　　　　　　　<br>　　　　　　　　　<br>　　　　　　　　　　　<br>　　　　　　　　　　　&gt; 创建队列的两种方式<br>　　　　　　　　　　　1.主队列<br>　　　　　　　　　　　凡是添加到主队列的任务(NSOperation),都会放在主线程执行<br>　　　　　　　　　　　NSOperationQueue <em>queue = [NSOperationQueue mainQueue];<br>　　　　　　　　　　　2.其他队列(非主队列)<br>　　　　　　　　　　　添加到这种队列的任务(NSOperation)，就会自动放到子现场中执行<br>　　　　　　　　　　　同时包含了：串形，并发功能<br>　　　　　　　　　　　NSOperationQueue </em>queue = [[NSOperationQueue alloc] init];<br>　　　　　　　　　　　以下是系统API提供的添加任务到队列中的方式<br>　　　　　　　　　　　- (void)addOperation:(NSOperation <em>)op;<br>　　　　　　　　　　　- (void)addOperations:(NSArray&lt;NSOperation </em>&gt; <em>)ops waitUntilFinished:(BOOL)wait NS_AVAILABLE(10_6, 4_0);<br>　　　　　　　　　　　以下API就是添加线程依赖关系<br>　　　　　　　　　　　- (void)addDependency:(NSOperation </em>)op;</p>
+</blockquote>
+
+    
+  </div>
+</article>
+
+
+   
+  <div class="text-center donation">
+    <div class="inner-donation">
+      <span class="btn-donation">支持一下</span>
+      <div class="donation-body">
+        <div class="tip text-center">扫一扫，支持ddSoul</div>
+        <ul class="theme.donation.items.length">
+        
+          <li class="item">
+            <img src="/images/weixin.png" alt="">
+          </li>
+        
+        </ul>
+      </div>
+    </div>
+  </div>
+
+
+   
+  <div class="box-prev-next clearfix">
+    <a class="show pull-left" href="/2017/07/25/小Case/">
+        <i class="icon icon-angle-left"></i>
+    </a>
+    <a class="show pull-right" href="/2017/11/23/小结/">
+        <i class="icon icon-angle-right"></i>
+    </a>
+  </div>
+
+
+
+
+</div>
+
+
+  <a id="backTop" class="back-top">
+    <i class="icon-angle-up"></i>
+  </a>
+
+
+
+
+  <div class="modal" id="modal">
+  <span id="cover" class="cover hide"></span>
+  <div id="modal-dialog" class="modal-dialog hide-dialog">
+    <div class="modal-header">
+      <span id="close" class="btn-close">关闭</span>
+    </div>
+    <hr>
+    <div class="modal-body">
+      <ul class="list-toolbox">
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archives/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              博客
+            </a>
+          </li>
+        
+      </ul>
+
+    </div>
+  </div>
+</div>
+
+
+
+  
+      <div class="fexo-comments comments-post">
+    
+  <section class="disqus-comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+  </section>
+
+  <script>
+    var disqus_shortname = 'forsigner';
+    
+    var disqus_url = 'http://yoursite.com/2017/08/05/多个接口顺序执行的处理方法/';
+    
+    (function(){
+      var dsq = document.createElement('script');
+      dsq.type = 'text/javascript';
+      dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+  </script>
+
+  <script id="dsq-count-scr" src="//forsigner.disqus.com/count.js" async></script>
+
+
+
+    
+
+
+
+
+    
+
+  </div>
+
+  
+
+  <script type="text/javascript">
+  function loadScript(url, callback) {
+    var script = document.createElement('script')
+    script.type = 'text/javascript';
+
+    if (script.readyState) { //IE
+      script.onreadystatechange = function() {
+        if (script.readyState == 'loaded' ||
+          script.readyState == 'complete') {
+          script.onreadystatechange = null;
+          callback();
+        }
+      };
+    } else { //Others
+      script.onload = function() {
+        callback();
+      };
+    }
+
+    script.src = url;
+    document.getElementsByTagName('head')[0].appendChild(script);
+  }
+
+  window.onload = function() {
+    loadScript('/js/bundle.js?235683', function() {
+      // load success
+    });
+  }
+</script>
+
+</body>
+</html>
