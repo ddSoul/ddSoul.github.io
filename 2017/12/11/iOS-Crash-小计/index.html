@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+
+
+  <html class="light page-post">
+
+
+<head>
+  <meta charset="utf-8">
+  
+  <title>iOS Crash 小计 | ddSoul</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="ddSoul,Object-C,JavaScript,Swift," />
+  
+
+  <meta name="description" content="iOS应用Crash是令我们开发者比较头疼的一件事情。比如线上应用的闪退，老板会很慌，你比老板更慌。所以说，有没有一劳永逸的办法来解决呢，看了网易的大白崩溃，感觉又发现了新大陆。  iOS常见的几种Crash类型 unrecognized selector crash KVO crash NSNotification crash NSTimer crash Container crash（数组越">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS Crash 小计">
+<meta property="og:url" content="http://yoursite.com/2017/12/11/iOS-Crash-小计/index.html">
+<meta property="og:site_name" content="ddSoul">
+<meta property="og:description" content="iOS应用Crash是令我们开发者比较头疼的一件事情。比如线上应用的闪退，老板会很慌，你比老板更慌。所以说，有没有一劳永逸的办法来解决呢，看了网易的大白崩溃，感觉又发现了新大陆。  iOS常见的几种Crash类型 unrecognized selector crash KVO crash NSNotification crash NSTimer crash Container crash（数组越">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/3282958-12c020d8c603a958.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/280">
+<meta property="og:updated_time" content="2018-09-06T02:55:09.984Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="iOS Crash 小计">
+<meta name="twitter:description" content="iOS应用Crash是令我们开发者比较头疼的一件事情。比如线上应用的闪退，老板会很慌，你比老板更慌。所以说，有没有一劳永逸的办法来解决呢，看了网易的大白崩溃，感觉又发现了新大陆。  iOS常见的几种Crash类型 unrecognized selector crash KVO crash NSNotification crash NSTimer crash Container crash（数组越">
+<meta name="twitter:image" content="https://upload-images.jianshu.io/upload_images/3282958-12c020d8c603a958.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/280">
+
+  
+
+  
+    <link rel="icon" href="/favicon.ico">
+  
+
+  <link href="/css/styles.css?v=c114cbe6" rel="stylesheet">
+
+
+  
+    <link rel="stylesheet" href="/css/personal-style.css">
+  
+
+  
+
+  
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?57e94d016e201fba3603a8a2b0263af0";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+  
+  <script type="text/javascript">
+	(function(){
+	    var bp = document.createElement('script');
+	    var curProtocol = window.location.protocol.split(':')[0];
+	    if (curProtocol === 'https') {
+	        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+	    }
+	    else {
+	        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+	    }
+	    var s = document.getElementsByTagName("script")[0];
+	    s.parentNode.insertBefore(bp, s);
+	})();
+  </script>
+
+
+
+  
+    <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  
+
+  
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.3.0/css/font-awesome.min.css">
+  
+</head>
+
+<body>
+
+
+  
+    <span id="toolbox-mobile" class="toolbox-mobile">盒子</span>
+  
+
+  <div class="post-header CENTER">
+   
+  <div class="toolbox">
+    <a class="toolbox-entry" href="/">
+      <span class="toolbox-entry-text">盒子</span>
+      <i class="icon-angle-down"></i>
+      <i class="icon-home"></i>
+    </a>
+    <ul class="list-toolbox">
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archives/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            博客
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+</div>
+
+
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#iOS常见的几种Crash类型"><span class="toc-text">iOS常见的几种Crash类型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#unrecognized-selector-crash"><span class="toc-text">unrecognized selector crash</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#首先需要了解方法调用的大概流程"><span class="toc-text">首先需要了解方法调用的大概流程</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#注："><span class="toc-text">注：</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#几个关键的方法"><span class="toc-text">几个关键的方法</span></a></li></ol></li></ol>
+  </div>
+
+
+
+<div class="content content-post CENTER">
+   <article id="post-iOS-Crash-小计" class="article article-type-post" itemprop="blogPost">
+  <header class="article-header">
+    <h1 class="post-title">iOS Crash 小计</h1>
+
+    <div class="article-meta">
+      <span>
+        <i class="icon-calendar"></i>
+        <span>2017.12.11</span>
+      </span>
+
+      
+        <span class="article-author">
+          <i class="icon-user"></i>
+          <span>Mr.deng</span>
+        </span>
+      
+
+      
+
+
+      
+        <span>
+          <i class="icon-comment"></i>
+          <a href="http://www.jianshu.com/u/2adde60e3bba/2017/12/11/iOS-Crash-小计/#disqus_thread"></a>
+        </span>
+      
+
+      
+      <i class="fa fa-eye"></i> 
+        <span id="busuanzi_container_page_pv">
+           &nbsp热度 <span id="busuanzi_value_page_pv">
+           <i class="fa fa-spinner fa-spin"></i></span>℃
+        </span>
+      
+
+      
+      
+    </div>
+  </header>
+
+  <div class="article-content">
+    
+      <blockquote>
+<p>iOS应用Crash是令我们开发者比较头疼的一件事情。比如线上应用的闪退，老板会很慌，你比老板更慌。所以说，有没有一劳永逸的办法来解决呢，看了网易的大白崩溃，感觉又发现了新大陆。</p>
+</blockquote>
+<h2 id="iOS常见的几种Crash类型"><a href="#iOS常见的几种Crash类型" class="headerlink" title="iOS常见的几种Crash类型"></a>iOS常见的几种Crash类型</h2><ul>
+<li>unrecognized selector crash</li>
+<li>KVO crash</li>
+<li>NSNotification crash</li>
+<li>NSTimer crash</li>
+<li>Container crash（数组越界，插nil等）</li>
+<li>NSString crash （字符串操作的crash）</li>
+<li>UI not on Main Thread Crash (非主线程刷UI(机制待改善))</li>
+<li>Thread 1:EXC_BAD_ACCESS(code=EXC_I386_GPFLT)(野指针)</li>
+</ul>
+<h2 id="unrecognized-selector-crash"><a href="#unrecognized-selector-crash" class="headerlink" title="unrecognized selector crash"></a>unrecognized selector crash</h2><h4 id="首先需要了解方法调用的大概流程"><a href="#首先需要了解方法调用的大概流程" class="headerlink" title="首先需要了解方法调用的大概流程"></a>首先需要了解方法调用的大概流程</h4><ul>
+<li><p>首先，在相应操作的对象中的缓存方法列表中找调用的方法，如果找到，转向相应实现并执行。</p>
+</li>
+<li><p>如果没找到，在相应操作的对象中的方法列表中找调用的方法，如果找到，转向相应实现执行</p>
+</li>
+<li><p>如果没找到，去父类指针所指向的对象中执行1，2.</p>
+</li>
+<li><p>以此类推，如果一直到根类还没找到，转向拦截调用，走消息转发机制。</p>
+</li>
+<li><p>如果没有重写拦截调用的方法，程序报错。</p>
+</li>
+</ul>
+<h5 id="注："><a href="#注：" class="headerlink" title="注："></a>注：</h5><ul>
+<li>普通方法的优先级: 分类&gt; 子类 &gt; 父类, 优先级高的同名方法覆盖优先级低的</li>
+</ul>
+<ul>
+<li>+load方法的优先级: 父类&gt; 子类&gt; 分类</li>
+<li>+load方法是在main() 函数之前调用,所有的类文件都会加载,包括分类<br>+load方法不会被覆盖</li>
+<li>同一主类的不同分类中的普通同名方法调用, 取决于编译的顺序, 后编译的文件中的同名方法会覆盖前面所有的,包括主类. +load方法的顺序也取决于编译顺序, 但是不会覆盖<br>分类中的方法名和主类方法名一样会报警告, 不会报错<br>声明和实现可以写在不同的分类中, 依然能找到实现<br>当第一次用到类的时候, 如果重写了+ initialize方法,会去调用<br>当调用子类的+ initialize方法时候, 先调用父类的,如果父类有分类, 那么分类的+ initialize会覆盖掉父类的, 和普通方法差不多<br>父类的+ initialize不一定会调用, 因为有可能父类的分类重写了它</li>
+</ul>
+<h3 id="几个关键的方法"><a href="#几个关键的方法" class="headerlink" title="几个关键的方法"></a>几个关键的方法</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">+ (BOOL)resolveClassMethod:(SEL)sel;</span><br><span class="line"></span><br><span class="line">+ (BOOL)resolveInstanceMethod:(SEL)sel;</span><br><span class="line"></span><br><span class="line">//后两个方法需要转发到其他的类处理</span><br><span class="line"></span><br><span class="line">- (id)forwardingTargetForSelector:(SEL)aSelector;</span><br><span class="line"></span><br><span class="line">- (void)forwardInvocation:(NSInvocation *)anInvocation;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">这里我们选择了第二步forwardingTargetForSelector来做文章。原因如下：</span><br><span class="line"></span><br><span class="line">resolveInstanceMethod 需要在类的本身上动态添加它本身不存在的方法，这些方法对于该类本身来说冗余的</span><br><span class="line">forwardInvocation可以通过NSInvocation的形式将消息转发给多个对象，但是其开销较大，需要创建新的NSInvocation对象，并且forwardInvocation的函数经常被使用者调用，来做多层消息转发选择机制，不适合多次重写</span><br><span class="line">forwardingTargetForSelector可以将消息转发给一个对象，开销较小，并且被重写的概率较低，适合重写</span><br><span class="line"></span><br><span class="line">先写到这。。。来活了。。。</span><br></pre></td></tr></table></figure>
+<p><img src="https://upload-images.jianshu.io/upload_images/3282958-12c020d8c603a958.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/280" alt="dd"></p>
+
+    
+  </div>
+</article>
+
+
+   
+  <div class="text-center donation">
+    <div class="inner-donation">
+      <span class="btn-donation">支持一下</span>
+      <div class="donation-body">
+        <div class="tip text-center">扫一扫，支持ddSoul</div>
+        <ul class="theme.donation.items.length">
+        
+          <li class="item">
+            <img src="/images/weixin.png" alt="">
+          </li>
+        
+        </ul>
+      </div>
+    </div>
+  </div>
+
+
+   
+  <div class="box-prev-next clearfix">
+    <a class="show pull-left" href="/2017/11/23/小结/">
+        <i class="icon icon-angle-left"></i>
+    </a>
+    <a class="show pull-right" href="/2018/01/30/XLAlert/">
+        <i class="icon icon-angle-right"></i>
+    </a>
+  </div>
+
+
+
+
+</div>
+
+
+  <a id="backTop" class="back-top">
+    <i class="icon-angle-up"></i>
+  </a>
+
+
+
+
+  <div class="modal" id="modal">
+  <span id="cover" class="cover hide"></span>
+  <div id="modal-dialog" class="modal-dialog hide-dialog">
+    <div class="modal-header">
+      <span id="close" class="btn-close">关闭</span>
+    </div>
+    <hr>
+    <div class="modal-body">
+      <ul class="list-toolbox">
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archives/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              博客
+            </a>
+          </li>
+        
+      </ul>
+
+    </div>
+  </div>
+</div>
+
+
+
+  
+      <div class="fexo-comments comments-post">
+    
+  <section class="disqus-comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+  </section>
+
+  <script>
+    var disqus_shortname = 'forsigner';
+    
+    var disqus_url = 'http://yoursite.com/2017/12/11/iOS-Crash-小计/';
+    
+    (function(){
+      var dsq = document.createElement('script');
+      dsq.type = 'text/javascript';
+      dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+  </script>
+
+  <script id="dsq-count-scr" src="//forsigner.disqus.com/count.js" async></script>
+
+
+
+    
+
+
+
+
+    
+
+  </div>
+
+  
+
+  <script type="text/javascript">
+  function loadScript(url, callback) {
+    var script = document.createElement('script')
+    script.type = 'text/javascript';
+
+    if (script.readyState) { //IE
+      script.onreadystatechange = function() {
+        if (script.readyState == 'loaded' ||
+          script.readyState == 'complete') {
+          script.onreadystatechange = null;
+          callback();
+        }
+      };
+    } else { //Others
+      script.onload = function() {
+        callback();
+      };
+    }
+
+    script.src = url;
+    document.getElementsByTagName('head')[0].appendChild(script);
+  }
+
+  window.onload = function() {
+    loadScript('/js/bundle.js?235683', function() {
+      // load success
+    });
+  }
+</script>
+
+</body>
+</html>
