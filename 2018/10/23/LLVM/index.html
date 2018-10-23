@@ -7,7 +7,7 @@
 <head>
   <meta charset="utf-8">
   
-  <title>Mac清理 | ddSoul</title>
+  <title>LLVM | ddSoul</title>
 
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -15,17 +15,17 @@
     <meta name="keywords" content="ddSoul,Object-C,JavaScript,Swift," />
   
 
-  <meta name="description" content="Mac感觉没下多少东西，但是内存越来越少，可怕，换电脑不存在的，那就着手清理一下。  下面说一下我清理了哪些文件:   ~/Library/Developer/Xcode/DerivedData/这个文件夹中保存的是Xcode的缓存文件，曾经在Xcode跑过的所有项目的索引、build的信息等都会保存在这里。删除后在下次打开项目编译的时候将会重新生成。由于这里包含了大量已经没用的项目的信息又懒">
+  <meta name="description" content="LLVM基础概念LLVM工程包含了一组模块化，可复用的编辑器和工具链。同其名字原意(Low Level Virtual Machine)不同的是，LLVM不是一个首字母缩写，而是工程的名字。目前LLVM包含的主要子项目包括: 1.LLVM Core:包含一个现在的源代码/目标设备无关的优化器，一集一个针对很多主流(甚至于一些非主流)的CPU的汇编代码生成支持。 2.Clang:一个C/C++/Ob">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Mac清理">
-<meta property="og:url" content="http://yoursite.com/2018/09/26/Mac清理/index.html">
+<meta property="og:title" content="LLVM">
+<meta property="og:url" content="http://yoursite.com/2018/10/23/LLVM/index.html">
 <meta property="og:site_name" content="ddSoul">
-<meta property="og:description" content="Mac感觉没下多少东西，但是内存越来越少，可怕，换电脑不存在的，那就着手清理一下。  下面说一下我清理了哪些文件:   ~/Library/Developer/Xcode/DerivedData/这个文件夹中保存的是Xcode的缓存文件，曾经在Xcode跑过的所有项目的索引、build的信息等都会保存在这里。删除后在下次打开项目编译的时候将会重新生成。由于这里包含了大量已经没用的项目的信息又懒">
+<meta property="og:description" content="LLVM基础概念LLVM工程包含了一组模块化，可复用的编辑器和工具链。同其名字原意(Low Level Virtual Machine)不同的是，LLVM不是一个首字母缩写，而是工程的名字。目前LLVM包含的主要子项目包括: 1.LLVM Core:包含一个现在的源代码/目标设备无关的优化器，一集一个针对很多主流(甚至于一些非主流)的CPU的汇编代码生成支持。 2.Clang:一个C/C++/Ob">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-09-26T09:05:31.286Z">
+<meta property="og:updated_time" content="2018-10-23T02:32:49.758Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Mac清理">
-<meta name="twitter:description" content="Mac感觉没下多少东西，但是内存越来越少，可怕，换电脑不存在的，那就着手清理一下。  下面说一下我清理了哪些文件:   ~/Library/Developer/Xcode/DerivedData/这个文件夹中保存的是Xcode的缓存文件，曾经在Xcode跑过的所有项目的索引、build的信息等都会保存在这里。删除后在下次打开项目编译的时候将会重新生成。由于这里包含了大量已经没用的项目的信息又懒">
+<meta name="twitter:title" content="LLVM">
+<meta name="twitter:description" content="LLVM基础概念LLVM工程包含了一组模块化，可复用的编辑器和工具链。同其名字原意(Low Level Virtual Machine)不同的是，LLVM不是一个首字母缩写，而是工程的名字。目前LLVM包含的主要子项目包括: 1.LLVM Core:包含一个现在的源代码/目标设备无关的优化器，一集一个针对很多主流(甚至于一些非主流)的CPU的汇编代码生成支持。 2.Clang:一个C/C++/Ob">
 
   
 
@@ -116,17 +116,22 @@
 </div>
 
 
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#LLVM基础概念"><span class="toc-text">LLVM基础概念</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#clang"><span class="toc-text">clang</span></a></li></ol>
+  </div>
+
 
 
 <div class="content content-post CENTER">
-   <article id="post-Mac清理" class="article article-type-post" itemprop="blogPost">
+   <article id="post-LLVM" class="article article-type-post" itemprop="blogPost">
   <header class="article-header">
-    <h1 class="post-title">Mac清理</h1>
+    <h1 class="post-title">LLVM</h1>
 
     <div class="article-meta">
       <span>
         <i class="icon-calendar"></i>
-        <span>2018.09.26</span>
+        <span>2018.10.23</span>
       </span>
 
       
@@ -142,7 +147,7 @@
       
         <span>
           <i class="icon-comment"></i>
-          <a href="http://www.jianshu.com/u/2adde60e3bba/2018/09/26/Mac清理/#disqus_thread"></a>
+          <a href="http://www.jianshu.com/u/2adde60e3bba/2018/10/23/LLVM/#disqus_thread"></a>
         </span>
       
 
@@ -161,36 +166,21 @@
 
   <div class="article-content">
     
-      <blockquote>
-<p> Mac感觉没下多少东西，但是内存越来越少，可怕，换电脑不存在的，那就着手清理一下。</p>
-</blockquote>
-<p>下面说一下我清理了哪些文件:</p>
-<ul>
-<li><ol>
-<li>~/Library/Developer/Xcode/DerivedData/<br>这个文件夹中保存的是Xcode的缓存文件，曾经在Xcode跑过的所有项目的索引、build的信息等都会保存在这里。删除后在下次打开项目编译的时候将会重新生成。由于这里包含了大量已经没用的项目的信息又懒得去筛选，于是把整个文件夹删了。</li>
-</ol>
-</li>
-<li><ol start="2">
-<li>~/Library/Developer/Xcode/iOS DeviceSupport/<br>每次把一个设备接入电脑进行真机调试之前，电脑会对设备建立索引，也在此文件夹下生成对该设备系统的支持文件。于是这里存在了一堆对旧版本iOS设备支持的文件。而我最近基本只对iOS9.3的设备进行真机调试。于是删除了所有低于9.3的文件夹。</li>
-</ol>
-</li>
-<li><ol start="3">
-<li>~/Library/Developer/Xcode/Archives/<br>每次打包App的dSYM等数据就保存在这里，把一些没用的版本删了。如果是上线了的版本还是保留吧。</li>
-</ol>
-</li>
-<li><ol start="4">
-<li>~/Library/Developer/Xcode/Products/<br>同上，把没用的删了。</li>
-</ol>
-</li>
-<li><ol start="5">
-<li>~/Library/Developer/CoreSimulator/Devices/<br>一堆模拟器的数据。每个文件夹里包含的就是一个特定系统版本的设备的数据。每个文件夹对应哪个设备可以在其下device.plist中查看。亲测删除之后的效果跟在模拟器里重置相同。省得一个个去重置了，删吧。</li>
-</ol>
-</li>
-<li><ol start="6">
-<li>~/Library/Developer/XCPGDevices/<br>这里保存了playground的项目缓存。全删了。</li>
-</ol>
-</li>
-</ul>
+      <h3 id="LLVM基础概念"><a href="#LLVM基础概念" class="headerlink" title="LLVM基础概念"></a>LLVM基础概念</h3><p>LLVM工程包含了一组模块化，可复用的编辑器和工具链。同其名字原意(Low Level Virtual Machine)不同的是，LLVM不是一个首字母缩写，而是工程的名字。目前LLVM包含的主要子项目包括:</p>
+<p>1.LLVM Core:包含一个现在的源代码/目标设备无关的优化器，一集一个针对很多主流(甚至于一些非主流)的CPU的汇编代码生成支持。</p>
+<p>2.Clang:一个C/C++/Objective-C编译器，致力于提供令人惊讶的快速编译，极其有用的错误和警告信息，提供一个可用于构建很棒的源代码级别的工具.</p>
+<p>3.dragonegg: gcc插件，可将GCC的优化和代码生成器替换为LLVM的相应工具。</p>
+<p>4.LLDB:基于LLVM提供的库和Clang构建的优秀的本地调试器。</p>
+<p>5.libc++、libc++ ABI: 符合标准的，高性能的C++标准库实现，以及对C++11的完整支持。</p>
+<p>6.compiler-rt:针对__fixunsdfdi和其他目标机器上没有一个核心IR(intermediate representation)对应的短原生指令序列时，提供高度调优过的底层代码生成支持。</p>
+<p>7.OpenMP: Clang中对多平台并行编程的runtime支持。</p>
+<p>8.vmkit:基于LLVM的Java和.NET虚拟机实</p>
+<p>9.polly: 支持高级别的循环和数据本地化优化支持的LLVM框架。</p>
+<p>10.libclc: OpenCL标准库的实现</p>
+<p>11.klee: 基于LLVM编译基础设施的符号化虚拟机</p>
+<p>12.SAFECode:内存安全的C/C++编译器</p>
+<p>13.lld: clang/llvm内置的链接器</p>
+<h3 id="clang"><a href="#clang" class="headerlink" title="clang"></a>clang</h3><p>作为LLVM提供的编译器前端，clang可将用户的源代码(C/C++/Objective-C)编译成语言/目标设备无关的IR(Intermediate Representation)实现。其可提供良好的插件支持，容许用户在编译时，运行额外的自定义动作。</p>
 
     
   </div>
@@ -217,10 +207,10 @@
 
    
   <div class="box-prev-next clearfix">
-    <a class="show pull-left" href="/2018/08/15/Cookie-Session-Token/">
+    <a class="show pull-left" href="/2018/09/26/Mac清理/">
         <i class="icon icon-angle-left"></i>
     </a>
-    <a class="show pull-right" href="/2018/10/23/LLVM/">
+    <a class="hide pull-right" href="/">
         <i class="icon icon-angle-right"></i>
     </a>
   </div>
@@ -279,7 +269,7 @@
   <script>
     var disqus_shortname = 'forsigner';
     
-    var disqus_url = 'http://yoursite.com/2018/09/26/Mac清理/';
+    var disqus_url = 'http://yoursite.com/2018/10/23/LLVM/';
     
     (function(){
       var dsq = document.createElement('script');
